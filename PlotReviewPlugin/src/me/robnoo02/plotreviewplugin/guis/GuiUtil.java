@@ -28,6 +28,8 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
 public class GuiUtil implements Listener {
+	
+	private static final GuiManager INSTANCE = new GuiManager();
 
 	public static final class Gui {
 
@@ -133,15 +135,11 @@ public class GuiUtil implements Listener {
 
 		private final ItemStack itemStack;
 		private final Material material;
-		private final int amount;
+		private final int amount, data;
 		private final ArrayList<String> lore;
-		private final String name;
-		private final String customSkull;
-		private final Runnable leftClick;
-		private final Runnable rightClick;
-		private final Runnable middleClick;
-		private final boolean glowing;
-		private final boolean hideFlags;
+		private final String name, customSkull;
+		private final Runnable leftClick, rightClick, middleClick;
+		private final boolean glowing, hideFlags;
 		private final Skull skullType;
 		protected InventoryClickEvent e;
 
@@ -162,20 +160,17 @@ public class GuiUtil implements Listener {
 			this.glowing = builder.glowing;
 			this.hideFlags = builder.hideFlags;
 			this.skullType = builder.skullType;
+			this.data = builder.data;
 		}
 
 		public static class Builder {
 			private ItemStack item;
 			private Material material = Material.STONE;
-			private int amount = 1;
+			private int amount = 1, data = 0;
 			private ArrayList<String> lore;
-			private String itemName;
-			private String customSkull;
-			private Runnable leftClick;
-			private Runnable rightClick;
-			private Runnable middleClick;
-			private boolean glowing = false;
-			private boolean hideFlags = false;
+			private String itemName, customSkull;
+			private Runnable leftClick, rightClick, middleClick;
+			private boolean glowing = false, hideFlags = false;
 			private Skull skullType = Skull.NONE;
 			public InventoryClickEvent e;
 
@@ -191,6 +186,11 @@ public class GuiUtil implements Listener {
 
 			public Builder lore(ArrayList<String> lore) {
 				this.lore = lore;
+				return this;
+			}
+			
+			public Builder data(int data) {
+				this.data = data;
 				return this;
 			}
 
@@ -258,7 +258,7 @@ public class GuiUtil implements Listener {
 		}
 
 		protected ItemStack getItem() {
-			ItemStack item = new ItemStack(material, amount);
+			ItemStack item = new ItemStack(material, amount, (byte) data);
 			if (itemStack != null)
 				item = itemStack;
 			if (skullType.equals(Skull.NONE))
@@ -356,8 +356,6 @@ public class GuiUtil implements Listener {
 	}
 
 	public static class GuiManager {
-
-		private static GuiManager INSTANCE = new GuiManager();
 
 		private HashMap<String, Gui> currentGuis = new HashMap<>();
 

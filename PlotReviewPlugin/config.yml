@@ -1,0 +1,44 @@
+# Set a message to a list with 1 item 'none' to disable this message.
+# empty-example:
+# - none
+messages:
+  plugin_info:
+  - '§8§m-----------------------------------------------------'
+  - ' '
+  - '§6%plugin% Info:'
+  - '§3Developers: §bRobnoo02&7, &bMirass'
+  - '§3Architect: §bPie3'
+  - '§3Version: §b%version%'
+  - '§3Description: §b%description%'
+  - ' '
+  - '§8§m-----------------------------------------------------'
+  help:
+  - '&9&m-------------------&9[ &c&lPlot Submit &9]&m--------------------'
+  - '&3You are about to submit a plot for review. The plot can be either accepted or denied. If accepted, you will be promoted.'
+  - ' '
+  - '&c&lRULES:'
+  - '&c[1] &fNo copied builds.'
+  - '&c[2] &fNo pixel art, parkour, or redstone based builds.'
+  - '&c[3] &fThe build must be completed.'
+  - '&c[4] &fYou must have made at least 80% of the build.'
+  - '&c[5] &fThe build MUST be in the designated plotworld.'
+  - '  '
+  - '&3Type &a&n/SUBMIT&r&3 again to submit the plot you are standing on.'
+  - '&9&m-----------------------------------------------------'
+  submit:
+  - '&aType &3/submit confirm &ato confirm your submit.'
+  - '&aType &3/submit cancel &ato cancel.'
+  cant_submit:
+  - "§cYou aren't the owner of this plot!"
+  not_on_plot:
+  - '§cYou must be on a plot.'
+  already_submitted:
+  - '§cThis plot has already been submitted!'
+  plot_submitted:
+  - '§aYour plot has been succesfully submitted!'
+  no_perms:
+  - '§cInsufficient permissions!'
+  cancelled:
+  - '§cSubmit has been cancelled!'
+  confirm_or_cancel:
+  - "&cPlease choose 'confirm' or 'cancel' as parameter."

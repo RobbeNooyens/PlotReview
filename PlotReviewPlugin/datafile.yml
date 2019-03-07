@@ -1,0 +1,7 @@
+id-counter: 1
+reviews:
+  reviewid:
+    reviewee-uuid: UUID
+    plot-location: worldname-idX;idY
+    rank: rank
+    submission-date: 'formatted time'    

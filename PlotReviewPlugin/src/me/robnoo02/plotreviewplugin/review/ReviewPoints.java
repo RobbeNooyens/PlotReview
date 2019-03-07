@@ -4,13 +4,15 @@ import java.text.DecimalFormat;
 
 public final class ReviewPoints {
 	
-	private final double structure, terrain, organics, composition, overall;
+	private static final int MIN_VAL = 1;
+	private final double structure, terrain, organics, composition, overall, divider;
 
 	private ReviewPoints(final double s, final double t, final double o, final double c) {
-		this.structure = s;
-		this.terrain = t;
-		this.organics = o;
-		this.composition = c;
+		this.structure = (s < MIN_VAL) ? 0 : s;
+		this.terrain = (t < MIN_VAL) ? 0 : t;
+		this.organics = (o < MIN_VAL) ? 0 : o;
+		this.composition = (c < MIN_VAL) ? 0 : c;
+		this.divider = getDivider();
 		this.overall = calculateOverall();
 	}
 
@@ -48,7 +50,18 @@ public final class ReviewPoints {
 	}
 	
 	public double calculateOverall() {
-		DecimalFormat df = new DecimalFormat("#.#");      
-		return Double.valueOf(df.format((structure + terrain + organics + composition) / 4));
+		if(divider <= 0)
+			return 0;
+		DecimalFormat df = new DecimalFormat("#.#");
+		return Double.valueOf(df.format((structure + terrain + organics + composition) / divider));
+	}
+	
+	public double getDivider() {
+		int divider = 0;
+		divider += (structure < MIN_VAL) ? 0 : 1;
+		divider += (terrain < MIN_VAL) ? 0 : 1;
+		divider += (organics < MIN_VAL) ? 0 : 1;
+		divider += (composition < MIN_VAL) ? 0 : 1;
+		return (double) divider;
 	}
 }
