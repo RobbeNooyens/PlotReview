@@ -1,46 +1,28 @@
 package me.robnoo02.plotreviewplugin.review;
 
+import me.robnoo02.plotreviewplugin.files.DataFile;
+
+/**
+ * This class keeps track of current ID.
+ * It triggers an update in the datafile when a new ID is generated.
+ * @author Robnoo02
+ *
+ */
 public final class ReviewID {
 
-	private static int count;
-	private final int intId;
+	private static int count = 0;
 	
-	private ReviewID() {
-		intId = count++;
+	public static int generateID() {
+		count++;
+		DataFile.getInstance().updateIDProgress();
+		return count;
 	}
 	
-	private ReviewID(int id) {
-		intId = id;
+	public static int getCurrentCount() {
+		return count;
 	}
 	
-	public static ReviewID generateID() {
-		return new ReviewID();
-	}
-	
-	public static ReviewID fromString(String id) {
-		return new ReviewID(Integer.valueOf(id));
-	}
-	
-	public static ReviewID fromInt(int id) {
-		return new ReviewID(id);
-	}
-	
-	public int getId() {
-		return intId;
-	}
-	
-	@Override 
-	public boolean equals(Object o){
-		if(!(o instanceof ReviewID))
-			return false;
-		ReviewID id = (ReviewID) o;
-		return intId == id.getId();
-	}
-	
-	@Override
-	public int hashCode() {
-		return intId;
-	}
-	
-	
+	public static void setCurrentCount(int count) {
+		ReviewID.count = count;
+	}	
 }

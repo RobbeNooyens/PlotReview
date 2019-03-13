@@ -1,71 +1,117 @@
 package me.robnoo02.plotreviewplugin.files;
 
-import me.robnoo02.plotreviewplugin.review.Review;
+import java.util.HashMap;
+import java.util.Set;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.intellectualcrafters.plot.object.Plot;
+
+import me.robnoo02.plotreviewplugin.review.ReviewID;
+import me.robnoo02.plotreviewplugin.review.ReviewReference;
+
+/**
+ * Represents the datafile.yml file.
+ * This singleton manages the file with references to userdata-files.
+ * The custom yml "datafile" stores:
+ * - ReviewID counter
+ * - References to files
+ *   - Key: id
+ *   - Value: uuid+plotLocation+reviewed
+ *     - uuid: String used to get the filepath for userdata
+ *     - plotLocation: Used to determine whether plot is already submitted or not
+ *     - reviewed: whether or not the plot is already reviewed or not
+ * Function:
+ * - Handle references (= reference to a userdata yml file) 
+ * 
+ * @author Robnoo02
+ *
+ */
 public class DataFile {
-
-	private static final DataFile INSTANCE = new DataFile();
+	
+	/*
+	 * PLEASE NOTE:
+	 * This class is temporary, it isn't finished yet.
+	 * It still should be cleaned up or rewritten.
+	 */
+	
+	private static final DataFile INSTANCE = new DataFile(); // Singleton instance
 	private CustomYml yml;
 	private static final String REVIEWPATH = "reviews";
+	private static final String IDPATH = "id-counter";
 
-	private enum YmlField {
-		REVIEWEE("reviewee-uuid"), PLOT_LOCATION("plot-location"), RANK("rank"), SUB_DATE("submission-date");
-
-		private String fieldName;
-
-		private YmlField(String s) {
-			this.fieldName = s;
-		}
-
-		public String getPath(String id) {
-			return REVIEWPATH + "." + id + "." + fieldName;
-		}
-	}
-
+	/**
+	 * Constructor
+	 * Private to enforce noninstantiability
+	 */
 	private DataFile() {
 	}
-	
+
+	/**
+	 * Load file and reads current ID progress from datafile
+	 */
 	public void setup() {
-		this.yml = CustomYml.createFile("datafile");
+		this.yml = CustomYml.createFile("datafile", false);
 		yml.setup();
+		ReviewID.setCurrentCount(getIDProgress());
+	}
+	
+	/**
+	 * Extracts all unreviewed reviews saved in yml.
+	 * @return HashMap containing Review ID and reference from datafile
+	 */
+	public HashMap<Integer, String> getUnreviewedReferences() {
+		Set<String> keys = yml.getYml().getConfigurationSection(REVIEWPATH).getKeys(false); // All saved Review ID's
+		HashMap<Integer, String> uuidOutput = new HashMap<>();
+		for(String key: keys) { // Loops through keys to determine which Reviews aren't reviewed yet
+			String value = yml.getString(REVIEWPATH + "." + key);
+			if(value.contains("false"))
+				uuidOutput.put(Integer.valueOf(key), ReviewReference.getUUID(value));
+		}
+		return uuidOutput;
 	}
 
 	public int getIDProgress() {
-		return (int) yml.get("id-counter");
+		return (Integer) yml.getInt(IDPATH);
 	}
 
-	public Review getReview(String id) {
-		if (!yml.containsKey(REVIEWPATH, id))
-			return null;
-		String reviewee = getString(id, YmlField.REVIEWEE);
-		String pLoc = getString(id, YmlField.PLOT_LOCATION);
-		String rank = getString(id, YmlField.RANK);
-		String subDate = getString(id, YmlField.SUB_DATE);
-		return Review.loadFromFile(id, reviewee, pLoc, subDate, rank);
-	}
-	
-	public void saveReview(Review review) {
-		String id = String.valueOf(review.getId().getId());
-		yml.set(YmlField.REVIEWEE.getPath(id), review.getReviewee().getUUID().toString());
-		yml.set(YmlField.PLOT_LOCATION.getPath(id), review.getPlotString());
-		yml.set(YmlField.RANK.getPath(id), review.getReviewee().getCurrentRank());
-		yml.set(YmlField.SUB_DATE.getPath(id), review.getReviewee().getDateFormatted());
+	public void updateIDProgress() {
+		yml.set(IDPATH, ReviewID.getCurrentCount());
 	}
 
-	public String getString(String id, YmlField field) {
-		try {
-			return (String) yml.get(field.getPath(id));
-		} catch (Exception e) {
-			return "";
-		}
+	public String getValue(int id) {
+		return (String) yml.get(REVIEWPATH + "." + String.valueOf(id));
 	}
-	
-	public void removeReview(int id) {
-		yml.set(REVIEWPATH + "." + String.valueOf(id), null);
+
+	public String getUUIDString(int id) {
+		String info = (String) yml.get(REVIEWPATH + "." + String.valueOf(id));
+		return info.substring(0, info.indexOf("+"));
+	}
+
+	public void addReview(int id, String uuid) {
+		yml.set(REVIEWPATH + "." + String.valueOf(id), uuid);
+	}
+
+	public String getReviewID(final Plot plot) {
+		ConfigurationSection section = getYml().getConfigurationSection("reviews");
+		String formattedPlot = formatPlot(plot);
+		for (String s : section.getKeys(false))
+			if (section.getString(s).contains(formattedPlot))
+				return s;
+		return null;
+	}
+
+	public YamlConfiguration getYml() {
+		return yml.getYml();
 	}
 
 	public static DataFile getInstance() {
 		return INSTANCE;
+	}
+
+	public String formatPlot(Plot plot) {
+		return plot.getWorldName() + ":" + plot.getId().toString();
 	}
 
 }

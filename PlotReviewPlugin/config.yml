@@ -1,6 +1,8 @@
 # Set a message to a list with 1 item 'none' to disable this message.
 # empty-example:
 # - none
+ranks:
+  player: '&8[Player]'
 messages:
   plugin_info:
   - '§8§m-----------------------------------------------------'
@@ -42,3 +44,14 @@ messages:
   - '§cSubmit has been cancelled!'
   confirm_or_cancel:
   - "&cPlease choose 'confirm' or 'cancel' as parameter."
+  review_info:
+  - '&3ID: &a%review_id%'
+  - '&3Reviewee: &a%reviewee%'
+  - '&3Rank: &a%rank%'
+  - '&3Date: &a%date%'
+  - '&3World: &a%world%'
+  - '&3Plot: &a%plot%'
+  - '&3Result: &a%result%'
+  - '&3Score: &a%score%'
+  - '&3Staff: &a%staff%'
+  

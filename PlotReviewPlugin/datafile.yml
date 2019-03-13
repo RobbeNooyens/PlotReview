@@ -1,7 +1,3 @@
 id-counter: 1
 reviews:
-  reviewid:
-    reviewee-uuid: UUID
-    plot-location: worldname-idX;idY
-    rank: rank
-    submission-date: 'formatted time'    
+  '1': c7a48d91-709d-4e60-9ba4-d4c37447c0ce+otherplots:1;-1\+false

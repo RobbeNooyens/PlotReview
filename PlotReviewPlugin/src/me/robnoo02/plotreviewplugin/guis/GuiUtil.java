@@ -27,13 +27,29 @@ import org.bukkit.inventory.meta.SkullMeta;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
+/**
+ * Self-created GuiUtil.
+ * Use the Builder subclass in the Gui class to build a Gui.
+ * A Gui contains GuiItems, which can be created with builders aswell.
+ * > Gui.Builder(Player p)
+ * > GuiItem.Builder()
+ * @author Robnoo02
+ *
+ */
 public class GuiUtil implements Listener {
+
+	/*
+	 * PLEASE NOTE:
+	 * This class works fine as it is now,
+	 * but should be rewritten to make it easier
+	 * to create and modify Gui's.
+	 */
 	
 	private static final GuiManager INSTANCE = new GuiManager();
 
-	public static final class Gui {
+	public static class Gui {
 
-		private final int invSize;
+		private final int invSize, page, totalPages;
 		private final String title;
 		private final Inventory inv;
 		private final Player player;
@@ -47,7 +63,17 @@ public class GuiUtil implements Listener {
 			this.player = builder.player;
 			this.guiContents = builder.guiContents;
 			this.gui = builder.guiLink;
+			this.page = builder.page;
+			this.totalPages = builder.totalPages;
 			fillInventory();
+		}
+
+		public int getPage() {
+			return page;
+		}
+
+		public int getTotalPages() {
+			return totalPages;
 		}
 
 		public int getSize() {
@@ -84,9 +110,22 @@ public class GuiUtil implements Listener {
 		public Gui getGuiLinked() {
 			return gui;
 		}
+		
+		public void setItem(int place, GuiItem item) {
+			if(!(place >= 0 && place < 54))
+				return;
+			guiContents[place] = item;
+			fillInventory();
+		}
 
+		/**
+		 * The constructor takes a Player as parameter where the
+		 * Gui should be opened for.
+		 * @author Robnoo02
+		 *
+		 */
 		public static class Builder {
-			private int size = 27;
+			private int size = 27, page = 1, totalPages = 1;
 			private String title = "&7Gui";
 			private GuiItem[] guiContents = new GuiItem[54];
 			private Player player;
@@ -102,7 +141,7 @@ public class GuiUtil implements Listener {
 			}
 
 			public Builder title(String title) {
-				this.title = title;
+				this.title = toColor(title);
 				return this;
 			}
 
@@ -111,11 +150,30 @@ public class GuiUtil implements Listener {
 					guiContents[place] = item;
 				return this;
 			}
-			
-			public Builder fillSlots(int start, int end, GuiItem... items) {
-				if(start >= 0 && start < end && (end - start) < 54) {
-					for(int i = start; i < end; i++)
-						guiContents[i] = items[i-start];
+
+			/*
+			 * Simulation:
+			 * fillSlots(0,5,3,size=20) -> ok
+			 * fillSlots(0,10,2,size=5) -> not ok
+			 * fillSlots(5,10,2,size=25) -> ok
+			 * items size = 5
+			 * 2 / pagina
+			 * 
+			 * PLEASE NOTE:
+			 * This algorithm should become a little bit more advanced
+			 * to make it even easier to handel multiple pages.
+			 */
+
+			public Builder fillSlots(int start, int end, int page, GuiItem... items) {
+				this.page = page;
+				int perPage = end - start;
+				this.totalPages = items.length / perPage;
+				if (items.length % perPage > 0)
+					totalPages++;
+				if (start >= 0 && start < end && perPage < 54) {
+					for (int invPlace = start; invPlace < end; invPlace++)
+						if ((invPlace - start) < page * items.length)
+							guiContents[invPlace] = items[((page - 1) * perPage) + (invPlace - start)];
 				}
 				return this;
 			}
@@ -188,7 +246,7 @@ public class GuiUtil implements Listener {
 				this.lore = lore;
 				return this;
 			}
-			
+
 			public Builder data(int data) {
 				this.data = data;
 				return this;
@@ -212,12 +270,14 @@ public class GuiUtil implements Listener {
 				this.customSkull = playerName;
 				this.skullType = Skull.PLAYER;
 				this.material = Material.SKULL_ITEM;
+				this.data = 3;
 				return this;
 			}
 
 			public Builder customSkull(String url) {
 				this.customSkull = url;
 				this.skullType = Skull.CUSTOM;
+				this.material = Material.SKULL_ITEM;
 				return this;
 			}
 
@@ -232,6 +292,13 @@ public class GuiUtil implements Listener {
 			}
 
 			public Builder middleClick(Runnable action) {
+				this.middleClick = action;
+				return this;
+			}
+			
+			public Builder click(Runnable action) {
+				this.leftClick = action;
+				this.rightClick = action;
 				this.middleClick = action;
 				return this;
 			}
@@ -266,11 +333,11 @@ public class GuiUtil implements Listener {
 			else if (skullType.equals(Skull.PLAYER))
 				item.setItemMeta(playerHeadMeta(item));
 			else if (skullType.equals(Skull.CUSTOM))
-				item.setItemMeta(customSkullMeta());
+				item = customSkullMeta();
 			return item;
 		}
 
-		public ItemMeta defaultMeta(ItemStack item) {
+		private ItemMeta defaultMeta(ItemStack item) {
 			ItemMeta meta = item.getItemMeta();
 			if (name != null)
 				meta.setDisplayName(name);
@@ -285,7 +352,7 @@ public class GuiUtil implements Listener {
 		}
 
 		@SuppressWarnings("deprecation")
-		public ItemMeta playerHeadMeta(ItemStack item) {
+		private ItemMeta playerHeadMeta(ItemStack item) {
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
 			if (customSkull != null)
 				meta.setOwner(customSkull);
@@ -301,7 +368,7 @@ public class GuiUtil implements Listener {
 			return meta;
 		}
 
-		public ItemMeta customSkullMeta() {
+		private ItemStack customSkullMeta() {
 			ItemStack item = createSkull(customSkull);
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
 			if (name != null)
@@ -313,7 +380,8 @@ public class GuiUtil implements Listener {
 			if (hideFlags)
 				meta.addItemFlags(ItemFlag.values());
 			meta.addItemFlags(ItemFlag.values());
-			return meta;
+			item.setItemMeta(meta);
+			return item;
 		}
 
 		private ItemStack createSkull(String skinURL) {
@@ -394,6 +462,15 @@ public class GuiUtil implements Listener {
 			gui.open();
 		}
 
+	}
+
+	public static int getTotalPages(int start, int end, int page, int size) {
+		if (start >= end)
+			return 0;
+		int totalPages = size / (end - start);
+		if (size % (end-start) > 0)
+			totalPages++;
+		return totalPages;
 	}
 
 	private static String toColor(String input) {

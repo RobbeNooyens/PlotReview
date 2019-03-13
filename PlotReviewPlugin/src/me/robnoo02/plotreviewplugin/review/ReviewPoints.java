@@ -2,6 +2,11 @@ package me.robnoo02.plotreviewplugin.review;
 
 import java.text.DecimalFormat;
 
+/**
+ * This class will not be used any longer due to unnecessary object creation.
+ * @author Robnoo02
+ *
+ */
 public final class ReviewPoints {
 	
 	private static final int MIN_VAL = 1;

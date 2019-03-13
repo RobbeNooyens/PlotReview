@@ -17,5 +17,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/robbe/Documents/Robbe/Vrije tijd/Programmeren/Java/Jar bestanden/Java External JARs/PermissionsEx/LuckPerms-Bukkit-4.3.73.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

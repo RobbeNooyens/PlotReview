@@ -1,12 +1,17 @@
 package me.robnoo02.plotreviewplugin.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+
+import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;;
 
 public enum SendMessageUtil {
 
-	PLUGIN_INFO, HELP, SUBMIT, CANT_SUBMIT, NOT_ON_PLOT, ALREADY_SUBMITTED, PLOT_SUBMITTED, NO_PERMS, CANCELLED, CONFIRM_OR_CANCEL;
+	PLUGIN_INFO, HELP, SUBMIT, CANT_SUBMIT, NOT_ON_PLOT, ALREADY_SUBMITTED, PLOT_SUBMITTED, NO_PERMS, CANCELLED, CONFIRM_OR_CANCEL, REVIEW_INFO;
 
 	private ArrayList<String> list = new ArrayList<>();
 
@@ -27,10 +32,29 @@ public enum SendMessageUtil {
 		return retValue;
 	}
 
+	public void sendReview(CommandSender p, String id, String uuid, HashMap<UserDataField, String> data) {
+		for (String s : list) {
+			String send = TextManipulation.toColor(reviewPlaceHolders(s, id, uuid, data));
+			if (!send.equalsIgnoreCase("none"))
+				p.sendMessage(send);
+		}
+	}
+
 	private String replacePlaceholders(CommandSender p, String input) {
 		for (Placeholder pH : Placeholder.values())
 			input = replace(input, pH.placeholder(), pH.value());
 		input = replace(input, "%target%", p.getName());
+		return input;
+	}
+
+	private String reviewPlaceHolders(String input, String id, String uuid, HashMap<UserDataField, String> data) {
+		input = replace(input, "%review_id%", id);
+		for (UserDataField field : data.keySet())
+			if (data.get(field) != null)
+				input = replace(input, field.getPlaceHolder(), data.get(field));
+			else if(input.contains(field.getPlaceHolder()))
+				return "none";
+		input = replace(input, "%reviewee%", Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName());
 		return input;
 	}
 
