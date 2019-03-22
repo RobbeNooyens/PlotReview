@@ -9,6 +9,15 @@ import me.robnoo02.plotreviewplugin.submit.SubmitManager;
 import me.robnoo02.plotreviewplugin.utils.PermissionUtil;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
+/**
+ * This class handles the /submit command.
+ * A submit will be saved in a queue on /submit.
+ * A submit can be confirmed with /submit confirm and cancelled with /submit cancel.
+ * Submit will be removed from queue after confirming/cancelling.
+ * 
+ * @author Robnoo02
+ *
+ */
 public class SubmitCmd implements CommandExecutor {
 
 	@Override

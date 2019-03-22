@@ -18,6 +18,13 @@ import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.submit.SubmitManager;
 import me.robnoo02.plotreviewplugin.utils.PermissionUtil;
 
+/**
+ * This class handles the /prdebug command.
+ * The command can display current queued submits and yml-file contents.
+ * 
+ * @author Robnoo02
+ *
+ */
 public class DebugCmd implements CommandExecutor {
 
 	@SuppressWarnings("deprecation")

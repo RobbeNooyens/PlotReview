@@ -10,6 +10,9 @@ import me.robnoo02.plotreviewplugin.utils.FormatterUtil;
 /**
  * This class handles the values for each key in the config file.
  * It extracts information and builds String with given variables.
+ * 
+ * For example: c7a48d91-709d-4e60-9ba4-d4c37447c0ce+plotsworld:1;-1\+false is a reference
+ * 
  * @author Robnoo02
  *
  */
@@ -23,7 +26,7 @@ public final class ReviewReference {
 	 * be moved to other classes.
 	 */
 
-	private static final String SPLIT = "\\+";
+	private static final String SPLIT = "\\+"; // Backslash since a +-sign is a special sign
 
 	// Static methods
 	public static String getUUID(String reference) {

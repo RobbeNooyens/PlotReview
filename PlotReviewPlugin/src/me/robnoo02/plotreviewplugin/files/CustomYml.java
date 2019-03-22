@@ -13,8 +13,8 @@ import me.robnoo02.plotreviewplugin.Main;
  * <h1>CustomYml</h1>
  * <hr>
  * <p>This class represents a Yml file.<br>
- * This class is designed to instantiate.<br>
- * You should manually call the setup() method before editing the yml.</p>
+ * This class is designed for instantiation.<br>
+ * IMPORTANT !! You should manually call the setup() method before editing the yml !!</p>
  * 
  * @author Robnoo02
  *

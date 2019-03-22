@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 
 /**
  * This class will not be used any longer due to unnecessary object creation.
+ * Let's give the gc some rest.
+ * 
  * @author Robnoo02
  *
  */

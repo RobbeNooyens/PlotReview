@@ -7,7 +7,7 @@ import me.robnoo02.plotreviewplugin.Main;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
- * This singleton writes and reads data from the config.yml.
+ * This singleton writes and reads data to and from the config.yml.
  * 
  * @author Robnoo02
  *
@@ -15,7 +15,7 @@ import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 public final class ConfigManager {
 
 	private static final ConfigManager INSTANCE = new ConfigManager(); // Singleton instance
-	private static final String MESSAGES_PATH = "messages."; 
+	private static final String MESSAGES_PATH = "messages."; // Path in config file to messages
 	private final Main plugin; // Main instance
 
 	/**

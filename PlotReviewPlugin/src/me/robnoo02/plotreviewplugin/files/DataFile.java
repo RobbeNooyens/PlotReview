@@ -23,7 +23,7 @@ import me.robnoo02.plotreviewplugin.review.ReviewReference;
  *     - plotLocation: Used to determine whether plot is already submitted or not
  *     - reviewed: whether or not the plot is already reviewed or not
  * Function:
- * - Handle references (= reference to a userdata yml file) 
+ * - Handles references (= reference to a userdata yml file) 
  * 
  * @author Robnoo02
  *

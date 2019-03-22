@@ -19,6 +19,7 @@ import me.robnoo02.plotreviewplugin.utils.RankUtil;
 
 /**
  * This class builds Gui's.
+ * 
  * @author Robnoo02
  *
  */
@@ -27,6 +28,14 @@ public class GuiFactory {
 	private static final String ARROW_LEFT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0ZjU5NzEzMWJiZTI1ZGMwNThhZjg4OGNiMjk4MzFmNzk1OTliYzY3Yzk1YzgwMjkyNWNlNGFmYmEzMzJmYyJ9fX0=";
 	private static final String ARROW_RIGHT = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGVmMzU2YWQyYWE3YjE2NzhhZWNiODgyOTBlNWZhNWEzNDI3ZTVlNDU2ZmY0MmZiNTE1NjkwYzY3NTE3YjgifX19";
 
+	/**
+	 * Returns a new instance of a Gui.
+	 * A Gui can be opened using its open() method.
+	 * @param p is Player to open Gui for
+	 * @param page is current page
+	 * @param stored is a reference to another Gui (to go back to previous page)
+	 * @return new Review Gui which can be opened with its open() method.
+	 */
 	public static Gui reviewGui(Player p, int page, Gui stored) {
 		int start = 0;
 		int end = 44;
@@ -40,6 +49,10 @@ public class GuiFactory {
 		return gui;
 	}
 
+	/**
+	 * @param p is Player
+	 * @return array containing all heads which should be putted into the Gui
+	 */
 	private static GuiItem[] getReviewHeads(Player p) {
 		HashMap<Integer, String> data = DataFile.getInstance().getUnreviewedReferences();
 		GuiItem[] items = new GuiItem[data.size()];
@@ -61,7 +74,14 @@ public class GuiFactory {
 		}
 		return items;
 	}
+	
+	/*
+	 * The following methods are used to build some GuiItems.	 * 
+	 */
 
+	/**
+	 * @return GuiItem to go to the next page, only used in reviewGui() method.
+	 */
 	private static GuiItem getNextPage(Player p, int start, int end, int page, int size, Gui current) {
 		int total = GuiUtil.getTotalPages(start, end, page, size);
 		if (page >= total)
@@ -73,6 +93,9 @@ public class GuiFactory {
 				}).build();
 	}
 
+	/**
+	 * @return GuiItem to go back to the previous page.
+	 */
 	private static GuiItem getPreviousPage(Player p, int start, int end, int page, int size, Gui gui) {
 		int total = GuiUtil.getTotalPages(start, end, page, size);
 		if (page < 2)
@@ -83,6 +106,9 @@ public class GuiFactory {
 				}).build();
 	}
 
+	/**
+	 * @return GuiItem to exit the menu.
+	 */
 	private static GuiItem getExit(Player p) {
 		return new GuiItem.Builder().material(Material.BARRIER).name("&cExit Menu").click(() -> p.closeInventory())
 				.build();

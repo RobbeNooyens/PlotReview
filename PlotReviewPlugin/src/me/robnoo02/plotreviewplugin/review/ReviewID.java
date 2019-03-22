@@ -12,6 +12,17 @@ public final class ReviewID {
 
 	private static int count = 0;
 	
+	/**
+	 * Constructor
+	 * Private to prevent useless instantiation
+	 */
+	private ReviewID() {
+	}
+	
+	/**
+	 * Generates an ID and triggers an update in the datafile
+	 * @return unique ID for a review
+	 */
 	public static int generateID() {
 		count++;
 		DataFile.getInstance().updateIDProgress();

@@ -6,8 +6,8 @@ import org.bukkit.permissions.PermissionDefault;
 
 public enum PermissionUtil {
 
-	SUBMIT_PLOT("submit"),
-	DEBUG("debug");
+	SUBMIT_PLOT("submit"), // Permission: plotreview.submit
+	DEBUG("debug"); // Permission: plotreview.debug
 	
 	private static final String PREFIX = "plotreview.";
 	private String permission;
