@@ -10,6 +10,7 @@ import com.intellectualcrafters.plot.object.Plot;
 
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 import me.robnoo02.plotreviewplugin.review.ReviewReference;
+import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 
 /**
  * Represents the datafile.yml file.
@@ -73,7 +74,7 @@ public class DataFile {
 	}
 
 	public int getIDProgress() {
-		return (Integer) yml.getInt(IDPATH);
+		return (int) yml.getInt(IDPATH);
 	}
 
 	public void updateIDProgress() {
@@ -95,7 +96,7 @@ public class DataFile {
 
 	public String getReviewID(final Plot plot) {
 		ConfigurationSection section = getYml().getConfigurationSection("reviews");
-		String formattedPlot = formatPlot(plot);
+		String formattedPlot = PlotUtil.formatPlot(plot);
 		for (String s : section.getKeys(false))
 			if (section.getString(s).contains(formattedPlot))
 				return s;
@@ -108,10 +109,6 @@ public class DataFile {
 
 	public static DataFile getInstance() {
 		return INSTANCE;
-	}
-
-	public String formatPlot(Plot plot) {
-		return plot.getWorldName() + ":" + plot.getId().toString();
 	}
 
 }

@@ -22,19 +22,19 @@ public enum SendMessageUtil {
 	public void send(CommandSender p) {
 		for (String s : list)
 			if (!s.equalsIgnoreCase("none"))
-				p.sendMessage(TextManipulation.toColor(replacePlaceholders(p, s)));
+				p.sendMessage(TextUtil.toColor(replacePlaceholders(p, s)));
 	}
 
 	public boolean send(CommandSender p, boolean retValue) {
 		for (String s : list)
 			if (!s.equalsIgnoreCase("none"))
-				p.sendMessage(TextManipulation.toColor(replacePlaceholders(p, s)));
+				p.sendMessage(TextUtil.toColor(replacePlaceholders(p, s)));
 		return retValue;
 	}
 
 	public void sendReview(CommandSender p, String id, String uuid, HashMap<UserDataField, String> data) {
 		for (String s : list) {
-			String send = TextManipulation.toColor(reviewPlaceHolders(s, id, uuid, data));
+			String send = TextUtil.toColor(reviewPlaceHolders(s, id, uuid, data));
 			if (!send.equalsIgnoreCase("none"))
 				p.sendMessage(send);
 		}

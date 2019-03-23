@@ -1,12 +1,5 @@
 package me.robnoo02.plotreviewplugin.review;
 
-import com.intellectualcrafters.plot.PS;
-import com.intellectualcrafters.plot.object.Plot;
-import com.intellectualcrafters.plot.object.PlotArea;
-import com.intellectualcrafters.plot.object.PlotId;
-
-import me.robnoo02.plotreviewplugin.utils.FormatterUtil;
-
 /**
  * This class handles the values for each key in the config file.
  * It extracts information and builds String with given variables.
@@ -26,9 +19,12 @@ public final class ReviewReference {
 	 * be moved to other classes.
 	 */
 
-	private static final String SPLIT = "\\+"; // Backslash since a +-sign is a special sign
+	private static final String SPLIT = "\\+"; // 2x backslash since a +-sign is a special sign
 
 	// Static methods
+	/**
+	 * @return UUID of the Player who owns the reviewed plot
+	 */
 	public static String getUUID(String reference) {
 		String[] info = reference.split(SPLIT);
 		if (info.length == 3)
@@ -36,6 +32,9 @@ public final class ReviewReference {
 		return null;
 	}
 
+	/**
+	 * @return world and PlotId of the reviewed plot
+	 */
 	public static String getPlotLocation(String reference) {
 		String[] info = reference.split(SPLIT);
 		if (info.length == 3)
@@ -43,6 +42,9 @@ public final class ReviewReference {
 		return null;
 	}
 
+	/**
+	 * @return boolean formatted as a String whether or not the plot is reviewed yet or not
+	 */
 	public static String getReviewed(String reference) {
 		String[] info = reference.split(SPLIT);
 		if (info.length == 3)
@@ -50,16 +52,10 @@ public final class ReviewReference {
 		return null;
 	}
 	
-	public static Plot getPlot(String plotLocation) {
-		String world = FormatterUtil.getWorld(plotLocation);
-		String id = FormatterUtil.getPlotId(plotLocation);
-		return PS.get().getPlot(PlotArea.createGeneric(world), PlotId.fromString(id));
-	}
-	
-	public static Plot getPlot(String world, String id) {
-		return PS.get().getPlot(PS.get().getPlotArea(world, id), PlotId.fromString(id));
-	}
-	
+	/**
+	 * Combines information to 1 String which can be saved in the datafile.
+	 * @return Reference as a String which contains a user UUID, a plot and a boolean
+	 */
 	public static String stringFormat(String uuid, String plotLocation, String reviewed) {
 		return uuid + "+" + plotLocation + "+" + reviewed;
 	}

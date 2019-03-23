@@ -14,7 +14,7 @@ import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtil.Gui;
 import me.robnoo02.plotreviewplugin.guis.GuiUtil.GuiItem;
-import me.robnoo02.plotreviewplugin.review.ReviewReference;
+import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 import me.robnoo02.plotreviewplugin.utils.RankUtil;
 
 /**
@@ -66,7 +66,7 @@ public class GuiFactory {
 					.lore("&3(" + String.valueOf(id) + ")", "&7World: &f" + info.get(UserDataField.WORLD),
 							"&7Plot: &f[" + info.get(UserDataField.PLOT) + "]")
 					.leftClick(
-							() -> ReviewReference
+							() -> PlotUtil
 											.getPlot(info.get(UserDataField.WORLD), info.get(UserDataField.PLOT))
 											.teleportPlayer(PlotPlayer.wrap(p)))
 					.playerSkull(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName()).build();

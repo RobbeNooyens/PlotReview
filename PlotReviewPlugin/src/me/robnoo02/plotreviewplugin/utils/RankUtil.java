@@ -16,7 +16,7 @@ public class RankUtil implements DebugUtil {
 	}
 
 	public static String getRankFormatted(String rankName) {
-		return TextManipulation.toColor(ConfigManager.getInstance().getString("ranks." + rankName));
+		return TextUtil.toColor(ConfigManager.getInstance().getString("ranks." + rankName));
 	}
 
 }
