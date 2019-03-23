@@ -25,7 +25,8 @@ import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 import me.robnoo02.plotreviewplugin.review.ReviewReference;
 import me.robnoo02.plotreviewplugin.utils.DebugUtil;
-import me.robnoo02.plotreviewplugin.utils.FormatterUtil;
+import me.robnoo02.plotreviewplugin.utils.DateFormatterUtil;
+import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 import me.robnoo02.plotreviewplugin.utils.RankUtil;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
@@ -35,6 +36,10 @@ public class SubmitManager implements DebugUtil {
 
 	private final Set<UUID> submitQueue = new HashSet<>();
 
+	/**
+	 * Constructor
+	 * Private for Singleton
+	 */
 	private SubmitManager() {
 	}
 	
@@ -59,36 +64,42 @@ public class SubmitManager implements DebugUtil {
 	}
 
 	public boolean submitPlot(Player p) {
-		int id = ReviewID.generateID();
-		Plot plot = PlotPlayer.wrap(p).getCurrentPlot();
+		int id = ReviewID.generateID(); // Generates unique ID for the Review
+		Plot plot = PlotUtil.getCurrentPlot(p); // Gets the plot the Player is standing on
 		if (!possibleToSubmit(p))
 			return false;
-		HashMap<UserDataField, String> fields = new HashMap<>();
-		fields.put(UserDataField.DATE, FormatterUtil.formatDate(new Date()));
+		HashMap<UserDataField, String> fields = new HashMap<>(); // HashMap to transfer Review data easily without creating new custom class Objects
+		fields.put(UserDataField.DATE, DateFormatterUtil.formatDate(new Date()));
 		fields.put(UserDataField.PLOT, plot.getId().toString());
 		fields.put(UserDataField.RANK, RankUtil.getRankName(p));
 		fields.put(UserDataField.WORLD, plot.getWorldName());
-		UserDataManager.getInstance().setUserData(p.getUniqueId().toString(), String.valueOf(id), fields);
-		String reference = ReviewReference.stringFormat(p.getUniqueId().toString(), FormatterUtil.formatPlot(plot), "false");
-		DataFile.getInstance().addReview(id, reference);
+		UserDataManager.getInstance().setUserData(p.getUniqueId().toString(), String.valueOf(id), fields); // Adds review to userdatafile
+		String reference = ReviewReference.stringFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false"); // Creates a Reference
+		DataFile.getInstance().addReview(id, reference); // Saves Review to datafile
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
 	}
 
 	public boolean possibleToSubmit(Player p) {
 		Plot plot = PlotPlayer.wrap(p).getCurrentPlot();
 		if (plot == null)
-			return SendMessageUtil.NOT_ON_PLOT.send(p, false);
+			return SendMessageUtil.NOT_ON_PLOT.send(p, false); // Player can't be null
 		if (!plot.getOwners().contains(p.getUniqueId()))
-			return SendMessageUtil.CANT_SUBMIT.send(p, false);
+			return SendMessageUtil.CANT_SUBMIT.send(p, false); // Player should be an owner of the Plot
 		if (!canSubmit(plot))
-			return SendMessageUtil.ALREADY_SUBMITTED.send(p, false);
+			return SendMessageUtil.ALREADY_SUBMITTED.send(p, false); // Plot shouldn't be reviewed yet
 		return true;
 	}
 
+	/**
+	 * @return true when Plot isn't submitted or reviewed yet
+	 */
 	public boolean canSubmit(Plot plot) {
 		return DataFile.getInstance().getReviewID(plot) == null;
 	}
 
+	/**
+	 * @return a comma seperated list containing names of queued Players
+	 */
 	public String getSubmits() {
 		StringBuilder builder = new StringBuilder();
 		for (UUID uuid : SubmitManager.getInstance().getSubmitQueue())

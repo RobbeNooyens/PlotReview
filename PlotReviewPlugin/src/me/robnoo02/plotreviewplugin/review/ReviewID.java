@@ -3,7 +3,7 @@ package me.robnoo02.plotreviewplugin.review;
 import me.robnoo02.plotreviewplugin.files.DataFile;
 
 /**
- * This class keeps track of current ID.
+ * This class keeps track of the current Review ID.
  * It triggers an update in the datafile when a new ID is generated.
  * @author Robnoo02
  *

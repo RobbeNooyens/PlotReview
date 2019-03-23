@@ -1,5 +1,5 @@
 name: PlotReviewPlugin
-version: 1.12.2.5
+version: 1.12.2.6
 description: Review plots
 author: Robnoo02
 main: me.robnoo02.plotreviewplugin.Main
@@ -13,4 +13,4 @@ commands:
     description: Submit your plot
   prdebug:
     usage: /<command>
-    description: debug values
+    description: Debug values
