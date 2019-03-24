@@ -1,6 +1,9 @@
 package me.robnoo02.plotreviewplugin.review;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
+
+import me.robnoo02.plotreviewplugin.files.ConfigManager;
 
 /**
  * This class will not be used any longer due to unnecessary object creation.
@@ -9,31 +12,27 @@ import java.text.DecimalFormat;
  * @author Robnoo02
  *
  */
-public final class ReviewPoints {
+public final class ReviewScore {
 	
 	private static final int MIN_VAL = 1;
 	private final double structure, terrain, organics, composition, overall, divider;
 
-	private ReviewPoints(final double s, final double t, final double o, final double c) {
-		this.structure = (s < MIN_VAL) ? 0 : s;
-		this.terrain = (t < MIN_VAL) ? 0 : t;
-		this.organics = (o < MIN_VAL) ? 0 : o;
-		this.composition = (c < MIN_VAL) ? 0 : c;
+	private ReviewScore(HashMap<ScoreAspect, Double> scores) {
+		this.structure = (scores.get(ScoreAspect.STRUCTURE) < MIN_VAL) ? 0 : scores.get(ScoreAspect.STRUCTURE);
+		this.terrain = (scores.get(ScoreAspect.TERRAIN) < MIN_VAL) ? 0 : scores.get(ScoreAspect.TERRAIN);
+		this.organics = (scores.get(ScoreAspect.ORGANICS) < MIN_VAL) ? 0 : scores.get(ScoreAspect.ORGANICS);
+		this.composition = (scores.get(ScoreAspect.COMPOSITION) < MIN_VAL) ? 0 : scores.get(ScoreAspect.COMPOSITION);
 		this.divider = getDivider();
 		this.overall = calculateOverall();
 	}
 
-	public static final ReviewPoints fromString(final String points) {
+	public static final ReviewScore fromString(final String points) {
 		return extract(points);
 	}
 
-	private static ReviewPoints extract(String points) {
-		String[] pSA = points.split("-"); // pointsStringArray
-		return new ReviewPoints(toDouble(pSA, 0), toDouble(pSA, 1), toDouble(pSA, 2), toDouble(pSA, 3));
-	}
-	
-	private static double toDouble(String[] pSA, int index) {
-		return Double.valueOf(pSA[index]);
+	private static ReviewScore extract(String score) {
+		HashMap<ScoreAspect, Double> scores = ConfigManager.getInstance().getScore(score); // pointsStringArray
+		return new ReviewScore(scores);
 	}
 
 	public double getStructurePoints() {
@@ -60,7 +59,7 @@ public final class ReviewPoints {
 		if(divider <= 0)
 			return 0;
 		DecimalFormat df = new DecimalFormat("#.#");
-		return Double.valueOf(df.format((structure + terrain + organics + composition) / divider));
+		return Double.valueOf(df.format((structure + terrain + organics + composition) / divider).replaceAll(",", "."));
 	}
 	
 	public double getDivider() {

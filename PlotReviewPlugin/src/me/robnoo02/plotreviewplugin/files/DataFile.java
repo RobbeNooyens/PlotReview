@@ -110,5 +110,14 @@ public class DataFile {
 	public static DataFile getInstance() {
 		return INSTANCE;
 	}
+	
+	public void setReviewed(int id, boolean bool) {
+		String current = getValue(id);
+		if(current.contains("false"))
+			current = current.replaceAll("false", String.valueOf(bool));
+		else 
+			current = current.replaceAll("true", String.valueOf(bool));
+		addReview(id, current);
+	}
 
 }

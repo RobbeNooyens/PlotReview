@@ -3,6 +3,8 @@
 # - none
 ranks:
   player: '&8[Player]'
+score: '%STRUCTURE%-%TERRAIN%-%ORGANICS%-%COMPOSITION%'
+score-separator: '-'
 messages:
   plugin_info:
   - '§8§m-----------------------------------------------------'
@@ -54,4 +56,6 @@ messages:
   - '&3Result: &a%result%'
   - '&3Score: &a%score%'
   - '&3Staff: &a%staff%'
+  no_past_reviews:
+  - "&cYou don't have any reviews!"
   

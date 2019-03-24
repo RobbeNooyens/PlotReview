@@ -1,5 +1,6 @@
 package me.robnoo02.plotreviewplugin.guis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -112,6 +113,36 @@ public class GuiFactory {
 	private static GuiItem getExit(Player p) {
 		return new GuiItem.Builder().material(Material.BARRIER).name("&cExit Menu").click(() -> p.closeInventory())
 				.build();
+	}
+	
+	/*******************
+	 * History Gui
+	 ******************/
+	
+	public static GuiItem getHistoryItem(Player p, HashMap<UserDataField, String> info, String playerUUID, String reviewID) {
+		return new GuiItem.Builder()
+				.name(RankUtil.getRankFormatted(info.get(UserDataField.RANK)) + " &7"
+						+ Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName())
+				.lore("&3(" + String.valueOf(reviewID) + ")", "&7World: &f" + info.get(UserDataField.WORLD),
+						"&7Plot: &f[" + info.get(UserDataField.PLOT) + "]")
+				.leftClick(
+						() -> PlotUtil
+										.getPlot(info.get(UserDataField.WORLD), info.get(UserDataField.PLOT))
+										.teleportPlayer(PlotPlayer.wrap(p)))
+				.playerSkull(Bukkit.getOfflinePlayer(UUID.fromString(playerUUID)).getName()).build();
+	}
+	
+	public static Gui historyGui(Player p, int page, Gui stored, ArrayList<GuiItem> items, String reviewee) {
+		int start = 0;
+		int end = 44;
+		int size = items.size();
+		Gui gui = new Gui.Builder(p)
+				.title("§4§lReview History")
+				.fillSlots(start, end, page, items.toArray(new GuiItem[size])).size(54).gui(stored).build();
+		gui.setItem(48, getPreviousPage(p, start, end, page, size, gui.getGuiLinked()));
+		gui.setItem(49, getExit(p));
+		gui.setItem(50, getNextPage(p, start, end, page, size, gui));
+		return gui;
 	}
 
 }

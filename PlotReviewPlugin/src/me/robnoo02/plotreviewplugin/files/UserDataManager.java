@@ -63,9 +63,6 @@ public class UserDataManager {
 	 */
 	public HashMap<UserDataField, String> getUserData(String uuid, String id) {
 		UserDataFile file = getUserDataFile(uuid); // Gets 
-		HashMap<UserDataField, String> fields = new HashMap<>();
-		for(UserDataField field: UserDataField.values())
-			fields.put(field, file.getString(id, field));
-		return fields;
+		return file.getUserData(id);
 	}
 }

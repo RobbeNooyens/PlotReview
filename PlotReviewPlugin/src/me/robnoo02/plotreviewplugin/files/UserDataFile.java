@@ -1,5 +1,6 @@
 package me.robnoo02.plotreviewplugin.files;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ public class UserDataFile {
 
 	private final String uuid; // Stores Player UUID
 	private final CustomYml yml; // Wraps customyml
-	
+
 	/**
 	 * Constructor
 	 * Private in combination with static factory
@@ -27,7 +28,7 @@ public class UserDataFile {
 		this.uuid = uuid.toString();
 		this.yml = CustomYml.createFileInFolder("userdata", this.uuid, true);
 	}
-	
+
 	/**
 	 * Returns an instance of a UserDataFile for a player
 	 * @return UserDataFile instance for given Player
@@ -35,7 +36,7 @@ public class UserDataFile {
 	public static UserDataFile getUserDataFile(OfflinePlayer player) {
 		return getUserDataFile(player.getUniqueId());
 	}
-	
+
 	/**
 	 * Returns an instance of a UserDataFile for a player with UUID
 	 * @return UserDataFile instance for given Player
@@ -46,7 +47,7 @@ public class UserDataFile {
 		file.yml.set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
 		return file;
 	}
-	
+
 	/**
 	 * Each enum value represents a key in a userdate yml.
 	 * Placeholder is used to replace the yml's value with.
@@ -55,14 +56,16 @@ public class UserDataFile {
 	 *
 	 */
 	public static enum UserDataField {
-		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), RESULT("%result%"), SCORE("%score%"), STAFF("%staff%");
-		
+		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), RESULT("%result%"), STRUCTURE_SCORE(
+				"%structure_score%"), TERRAIN_SCORE("%terrain_score%"), ORGANICS_SCORE(
+						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%");
+
 		private String placeholder;
-		
+
 		private UserDataField(String pH) {
 			this.placeholder = pH;
 		}
-		
+
 		/**
 		 * Returns path to get a value in a userdata yml.
 		 * @param id Review ticket ID
@@ -71,11 +74,12 @@ public class UserDataFile {
 		public String getPath(String id) {
 			return "tickets." + id + "." + this.toString().toLowerCase();
 		}
+
 		public String getPlaceHolder() {
 			return placeholder;
 		}
 	}
-	
+
 	/**
 	 * Gets a yml value obtainable with a UserDataField key.
 	 * @param id Review ticket ID
@@ -85,7 +89,7 @@ public class UserDataFile {
 	public String getString(String id, UserDataField field) {
 		return (String) yml.get(field.getPath(id));
 	}
-	
+
 	/**
 	 * Sets a value for a userdata key.
 	 * @param id Review ticket ID
@@ -95,12 +99,23 @@ public class UserDataFile {
 	public void setString(String id, UserDataField field, String value) {
 		yml.set(field.getPath(id), value);
 	}
-	
+
 	/**
 	 * Gets the ymlFile used by this instance.
 	 * @return YamlConfiguration for userdata configfile
 	 */
 	public YamlConfiguration getYml() {
 		return yml.getYml();
+	}
+
+	/**
+	 * @param id is ID of Review
+	 * @return HashMap containing all fields with review data
+	 */
+	public HashMap<UserDataField, String> getUserData(String id) {
+		HashMap<UserDataField, String> fields = new HashMap<>();
+		for (UserDataField field : UserDataField.values())
+			fields.put(field, getString(id, field));
+		return fields;
 	}
 }
