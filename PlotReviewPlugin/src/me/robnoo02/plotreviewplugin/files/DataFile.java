@@ -1,16 +1,8 @@
 package me.robnoo02.plotreviewplugin.files;
 
-import java.util.HashMap;
-import java.util.Set;
-
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.intellectualcrafters.plot.object.Plot;
-
 import me.robnoo02.plotreviewplugin.review.ReviewID;
-import me.robnoo02.plotreviewplugin.review.ReviewReference;
-import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 
 /**
  * Represents the datafile.yml file.
@@ -31,16 +23,8 @@ import me.robnoo02.plotreviewplugin.utils.PlotUtil;
  */
 public class DataFile {
 	
-	/*
-	 * PLEASE NOTE:
-	 * This class is temporary, it isn't finished yet.
-	 * It still should be cleaned up or rewritten.
-	 */
-	
 	private static final DataFile INSTANCE = new DataFile(); // Singleton instance
 	private CustomYml yml;
-	private static final String REVIEWPATH = "reviews";
-	private static final String IDPATH = "id-counter";
 
 	/**
 	 * Constructor
@@ -55,69 +39,19 @@ public class DataFile {
 	public void setup() {
 		this.yml = CustomYml.createFile("datafile", false);
 		yml.setup();
-		ReviewID.setCurrentCount(getIDProgress());
+		ReviewID.setCurrentCount(DataFileManager.getIDProgress());
+	}
+
+	public YamlConfiguration getYmlFile() {
+		return yml.getYml();
 	}
 	
-	/**
-	 * Extracts all unreviewed reviews saved in yml.
-	 * @return HashMap containing Review ID and reference from datafile
-	 */
-	public HashMap<Integer, String> getUnreviewedReferences() {
-		Set<String> keys = yml.getYml().getConfigurationSection(REVIEWPATH).getKeys(false); // All saved Review ID's
-		HashMap<Integer, String> uuidOutput = new HashMap<>();
-		for(String key: keys) { // Loops through keys to determine which Reviews aren't reviewed yet
-			String value = yml.getString(REVIEWPATH + "." + key);
-			if(value.contains("false"))
-				uuidOutput.put(Integer.valueOf(key), ReviewReference.getUUID(value));
-		}
-		return uuidOutput;
-	}
-
-	public int getIDProgress() {
-		return (int) yml.getInt(IDPATH);
-	}
-
-	public void updateIDProgress() {
-		yml.set(IDPATH, ReviewID.getCurrentCount());
-	}
-
-	public String getValue(int id) {
-		return (String) yml.get(REVIEWPATH + "." + String.valueOf(id));
-	}
-
-	public String getUUIDString(int id) {
-		String info = (String) yml.get(REVIEWPATH + "." + String.valueOf(id));
-		return info.substring(0, info.indexOf("+"));
-	}
-
-	public void addReview(int id, String uuid) {
-		yml.set(REVIEWPATH + "." + String.valueOf(id), uuid);
-	}
-
-	public String getReviewID(final Plot plot) {
-		ConfigurationSection section = getYml().getConfigurationSection("reviews");
-		String formattedPlot = PlotUtil.formatPlot(plot);
-		for (String s : section.getKeys(false))
-			if (section.getString(s).contains(formattedPlot))
-				return s;
-		return null;
-	}
-
-	public YamlConfiguration getYml() {
-		return yml.getYml();
+	public CustomYml getCustomYml() {
+		return yml;
 	}
 
 	public static DataFile getInstance() {
 		return INSTANCE;
-	}
-	
-	public void setReviewed(int id, boolean bool) {
-		String current = getValue(id);
-		if(current.contains("false"))
-			current = current.replaceAll("false", String.valueOf(bool));
-		else 
-			current = current.replaceAll("true", String.valueOf(bool));
-		addReview(id, current);
 	}
 
 }

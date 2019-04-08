@@ -3,6 +3,8 @@ package me.robnoo02.plotreviewplugin.commands;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,6 +29,7 @@ import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
  */
 public class ReviewCmd implements CommandExecutor {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender))
@@ -58,31 +61,40 @@ public class ReviewCmd implements CommandExecutor {
 					UserDataManager.getInstance().getUserData(uuid, id));
 			break;
 		case "history":
-			if(!(sender instanceof Player))
+			if (!(sender instanceof Player))
 				return true;
 			Player p = (Player) sender;
-			UserDataFile file = UserDataManager.getInstance().getUserDataFile(String.valueOf(p.getUniqueId()));
-			if(!file.getYml().getKeys(false).contains("tickets"))
+			OfflinePlayer target;
+			if (args.length < 2)
+				target = p;
+			else
+				target = Bukkit.getOfflinePlayer(args[1]);
+			if(target == null)
+				target = p;
+			UserDataFile file = UserDataManager.getInstance().getUserDataFile(String.valueOf(target.getUniqueId()));
+			if (!file.getYml().getKeys(false).contains("tickets"))
 				return SendMessageUtil.NO_PAST_REVIEWS.send(p, true);
 			ArrayList<GuiItem> items = new ArrayList<>();
-			for(String idKey: file.getYml().getConfigurationSection("tickets").getKeys(false)) {
-				items.add(GuiFactory.getHistoryItem(p, file.getUserData(idKey), p.getUniqueId().toString(), idKey));
+			for (String idKey : file.getYml().getConfigurationSection("tickets").getKeys(false)) {
+				items.add(GuiFactory.getHistoryItem(p, file.getUserData(idKey), target.getUniqueId().toString(), idKey));
 			}
 			Gui historyGui = GuiFactory.historyGui(p, 1, null, items, p.getName());
 			historyGui.open();
 			break;
 		case "score":
-			if(args.length < 3)
+			if (args.length < 3)
 				return true;
 			String scoreId = args[1];
 			String score = args[2];
 			ReviewScore reviewScore = ReviewScore.fromString(score);
 			String userUUID = DataFile.getInstance().getUUIDString(Integer.valueOf(scoreId));
 			UserDataFile userFile = UserDataManager.getInstance().getUserDataFile(userUUID);
-			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE, String.valueOf(reviewScore.getStructurePoints()));
+			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE,
+					String.valueOf(reviewScore.getStructurePoints()));
 			userFile.setString(scoreId, UserDataField.TERRAIN_SCORE, String.valueOf(reviewScore.getTerrainPoints()));
 			userFile.setString(scoreId, UserDataField.ORGANICS_SCORE, String.valueOf(reviewScore.getOrganicsPoints()));
-			userFile.setString(scoreId, UserDataField.COMPOSITION_SCORE, String.valueOf(reviewScore.getCompositionPoints()));
+			userFile.setString(scoreId, UserDataField.COMPOSITION_SCORE,
+					String.valueOf(reviewScore.getCompositionPoints()));
 			userFile.setString(scoreId, UserDataField.RESULT, String.valueOf(reviewScore.calculateOverall()));
 			userFile.setString(scoreId, UserDataField.STAFF, sender.getName().toString());
 			DataFile.getInstance().setReviewed(Integer.valueOf(scoreId), true);
