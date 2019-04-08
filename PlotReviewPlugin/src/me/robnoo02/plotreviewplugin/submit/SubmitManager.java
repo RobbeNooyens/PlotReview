@@ -19,13 +19,13 @@ import org.bukkit.entity.Player;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import me.robnoo02.plotreviewplugin.files.DataFile;
+import me.robnoo02.plotreviewplugin.files.DataFileManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 import me.robnoo02.plotreviewplugin.review.ReviewReference;
-import me.robnoo02.plotreviewplugin.utils.DebugUtil;
 import me.robnoo02.plotreviewplugin.utils.DateFormatterUtil;
+import me.robnoo02.plotreviewplugin.utils.DebugUtil;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 import me.robnoo02.plotreviewplugin.utils.RankUtil;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
@@ -73,9 +73,9 @@ public class SubmitManager implements DebugUtil {
 		fields.put(UserDataField.PLOT, plot.getId().toString());
 		fields.put(UserDataField.RANK, RankUtil.getRankName(p));
 		fields.put(UserDataField.WORLD, plot.getWorldName());
-		UserDataManager.getInstance().setUserData(p.getUniqueId().toString(), String.valueOf(id), fields); // Adds review to userdatafile
+		UserDataManager.getInstance().setUserData(id, fields); // Adds review to userdatafile
 		String reference = ReviewReference.stringFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false"); // Creates a Reference
-		DataFile.getInstance().addReview(id, reference); // Saves Review to datafile
+		DataFileManager.addReview(id, reference); // Saves Review to datafile
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
 	}
 
@@ -94,7 +94,7 @@ public class SubmitManager implements DebugUtil {
 	 * @return true when Plot isn't submitted or reviewed yet
 	 */
 	public boolean canSubmit(Plot plot) {
-		return DataFile.getInstance().getReviewID(plot) == null;
+		return DataFileManager.idFromPlot(plot) == null;
 	}
 
 	/**

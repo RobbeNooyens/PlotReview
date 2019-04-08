@@ -15,29 +15,40 @@ public class DataFileManager {
 
 	private static final String REVIEWPATH = "reviews";
 	private static final String IDPATH = "id-counter";
-	
+
 	/**
 	 * Extracts all unreviewed reviews saved in yml.
+	 * 
 	 * @return HashMap containing Review ID and reference from datafile
 	 */
 	public static HashMap<Integer, String> getUnreviewedReferences() {
-		Set<String> keys = DataFile.getInstance().getYmlFile().getConfigurationSection(REVIEWPATH).getKeys(false); // All saved Review ID's
+		Set<String> keys = DataFile.getInstance().getCustomYml().getYml().getConfigurationSection(REVIEWPATH)
+				.getKeys(false);
 		HashMap<Integer, String> uuidOutput = new HashMap<>();
-		for(String key: keys) { // Loops through keys to determine which Reviews aren't reviewed yet
+		for (String key : keys) { // Loops through keys to determine which Reviews aren't reviewed yet
 			String value = getValue(Integer.valueOf(key));
-			if(value.contains("false"))
-				uuidOutput.put(Integer.valueOf(key), ReviewReference.getUUID(value));
+			if (value.contains("false"))
+				uuidOutput.put(Integer.valueOf(key), ReviewReference.getUUID(value)); // Adds if not reviewed
 		}
 		return uuidOutput;
 	}
-	
+
 	public static String getReviewInfo(int reviewId, int infoPos) {
-		String[] info = getValue(reviewId).split("\\+");
-		return (infoPos >= info.length) ? null : info[infoPos];
+		return strip(getValue(reviewId), "\\+", infoPos);
+	}
+
+	public static String strip(final String input, final String regex, final int index) {
+		String[] info = input.split(regex);
+		return (index >= info.length) ? null : info[index];
 	}
 
 	public static String getValue(int reviewId) {
 		return DataFile.getInstance().getCustomYml().getString(REVIEWPATH + "." + String.valueOf(reviewId));
+	}
+
+	public static boolean containsId(int reviewId) {
+		return DataFile.getInstance().getCustomYml().getConfigSection(REVIEWPATH).getKeys(false)
+				.contains(String.valueOf(reviewId));
 	}
 
 	public static String getUUID(int reviewId) {
@@ -48,28 +59,29 @@ public class DataFileManager {
 		DataFile.getInstance().getCustomYml().set(REVIEWPATH + "." + String.valueOf(id), uuid);
 	}
 
-	public static String getReviewID(final Plot plot) {
-		ConfigurationSection section = DataFile.getInstance().getYmlFile().getConfigurationSection("reviews");
+	public static String idFromPlot(final Plot plot) {
+		ConfigurationSection section = DataFile.getInstance().getCustomYml().getYml()
+				.getConfigurationSection("reviews");
 		String formattedPlot = PlotUtil.formatPlot(plot);
 		for (String s : section.getKeys(false))
 			if (section.getString(s).contains(formattedPlot))
 				return s;
 		return null;
 	}
-	
+
 	public static void setReviewed(int plotId, boolean bool) {
 		String current = getValue(plotId);
-		if(current.contains("false"))
+		if (current.contains("false"))
 			current = current.replaceAll("false", String.valueOf(bool));
-		else 
+		else
 			current = current.replaceAll("true", String.valueOf(bool));
 		addReview(plotId, current);
 	}
-	
+
 	/*
-	 * ID Methods 
+	 * ID Methods
 	 */
-	
+
 	public static int getIDProgress() {
 		return (int) DataFile.getInstance().getCustomYml().getInt(IDPATH);
 	}
@@ -77,5 +89,5 @@ public class DataFileManager {
 	public static void updateIDProgress() {
 		DataFile.getInstance().getCustomYml().set(IDPATH, ReviewID.getCurrentCount());
 	}
-	
+
 }

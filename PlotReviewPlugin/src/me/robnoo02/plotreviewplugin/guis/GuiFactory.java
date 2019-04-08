@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import me.robnoo02.plotreviewplugin.files.DataFile;
+import me.robnoo02.plotreviewplugin.files.DataFileManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtil.Gui;
@@ -40,7 +40,7 @@ public class GuiFactory {
 	public static Gui reviewGui(Player p, int page, Gui stored) {
 		int start = 0;
 		int end = 44;
-		int size = DataFile.getInstance().getUnreviewedReferences().size();
+		int size = DataFileManager.getUnreviewedReferences().size();
 		Gui gui = new Gui.Builder(p)
 				.title("§4§lAvailable Reviews §9[" + size + "]")
 				.fillSlots(start, end, page, getReviewHeads(p)).size(54).gui(stored).build();
@@ -55,12 +55,12 @@ public class GuiFactory {
 	 * @return array containing all heads which should be putted into the Gui
 	 */
 	private static GuiItem[] getReviewHeads(Player p) {
-		HashMap<Integer, String> data = DataFile.getInstance().getUnreviewedReferences();
+		HashMap<Integer, String> data = DataFileManager.getUnreviewedReferences();
 		GuiItem[] items = new GuiItem[data.size()];
 		int i = 0;
 		for (Integer id : data.keySet()) {
 			String uuid = data.get(id);
-			HashMap<UserDataField, String> info = UserDataManager.getInstance().getUserData(uuid, String.valueOf(id));
+			HashMap<UserDataField, String> info = UserDataManager.getInstance().getUserData(id);
 			GuiItem item = new GuiItem.Builder()
 					.name(RankUtil.getRankFormatted(info.get(UserDataField.RANK)) + " &7"
 							+ Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName())

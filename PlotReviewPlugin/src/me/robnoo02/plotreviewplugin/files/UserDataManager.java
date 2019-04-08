@@ -42,14 +42,18 @@ public class UserDataManager {
 		return files.get(uuid); // Returns UserDataFile for UUID
 	}
 	
+	public UserDataFile getUserDataFile(int reviewId) {
+		return getUserDataFile(DataFileManager.getUUID(reviewId));
+	}
+	
 	/**
 	 * Writes given data to userdata file.
 	 * @param userUUID UUID of player to save data for
 	 * @param id Review ticket ID
 	 * @param data HashMap containing UserDataField as a key and its corresponding value as a String
 	 */
-	public void setUserData(String userUUID, String id, HashMap<UserDataField, String> data) {
-		UserDataFile file = getUserDataFile(userUUID); // Gets UserDataFile object for Player
+	public void setUserData(int id, HashMap<UserDataField, String> data) {
+		UserDataFile file = getUserDataFile(id); // Gets UserDataFile object for Player
 		for(UserDataField field: UserDataField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
 				file.setString(id, field, data.get(field)); // Sets value for each key in yml
@@ -61,8 +65,8 @@ public class UserDataManager {
 	 * @param id Review ticket ID
 	 * @return HashMap containing all available reviewdata for a Player
 	 */
-	public HashMap<UserDataField, String> getUserData(String uuid, String id) {
-		UserDataFile file = getUserDataFile(uuid); // Gets 
+	public HashMap<UserDataField, String> getUserData(int id) {
+		UserDataFile file = getUserDataFile(id); // Gets 
 		return file.getUserData(id);
 	}
 }

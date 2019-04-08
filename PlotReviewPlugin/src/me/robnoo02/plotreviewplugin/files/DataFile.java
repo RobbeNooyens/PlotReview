@@ -1,7 +1,5 @@
 package me.robnoo02.plotreviewplugin.files;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 
 /**
@@ -40,10 +38,6 @@ public class DataFile {
 		this.yml = CustomYml.createFile("datafile", false);
 		yml.setup();
 		ReviewID.setCurrentCount(DataFileManager.getIDProgress());
-	}
-
-	public YamlConfiguration getYmlFile() {
-		return yml.getYml();
 	}
 	
 	public CustomYml getCustomYml() {

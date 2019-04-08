@@ -21,8 +21,7 @@ public final class ConfigManager {
 	private final Main plugin; // Main instance
 
 	/**
-	 * Constructor
-	 * Private for singleton
+	 * Constructor Private for singleton
 	 */
 	private ConfigManager() {
 		this.plugin = Main.getInstance();
@@ -66,24 +65,24 @@ public final class ConfigManager {
 			}
 		}
 	}
-	
+
 	public HashMap<ScoreAspect, Double> getScore(String score) {
 		String scoreFormat = plugin.getConfig().getString("score");
 		String separator = plugin.getConfig().getString("score-separator");
 		HashMap<ScoreAspect, Double> scores = new HashMap<>();
 		String[] givenPoints = score.split(separator);
 		String[] format = scoreFormat.split(separator);
-		if(givenPoints.length != format.length)
+		if (givenPoints.length != format.length)
 			return null;
-		for(int i = 0; i < format.length; i++) {
+		for (int i = 0; i < format.length; i++) {
 			String s = format[i];
-			if(s.equalsIgnoreCase("%STRUCTURE%")) {
+			if (s.equalsIgnoreCase("%STRUCTURE%")) {
 				scores.put(ScoreAspect.STRUCTURE, Double.valueOf(givenPoints[i]));
-			} else if(s.equalsIgnoreCase("%TERRAIN%")) {
+			} else if (s.equalsIgnoreCase("%TERRAIN%")) {
 				scores.put(ScoreAspect.TERRAIN, Double.valueOf(givenPoints[i]));
-			} else if(s.equalsIgnoreCase("%ORGANICS%")) {
+			} else if (s.equalsIgnoreCase("%ORGANICS%")) {
 				scores.put(ScoreAspect.ORGANICS, Double.valueOf(givenPoints[i]));
-			} else if(s.equalsIgnoreCase("%COMPOSITION%")) {
+			} else if (s.equalsIgnoreCase("%COMPOSITION%")) {
 				scores.put(ScoreAspect.COMPOSITION, Double.valueOf(givenPoints[i]));
 			}
 		}

@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import me.robnoo02.plotreviewplugin.files.DataFile;
+import me.robnoo02.plotreviewplugin.files.DataFileManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
@@ -40,12 +40,11 @@ public class ReviewCmd implements CommandExecutor {
 			return SendMessageUtil.PLUGIN_INFO.send(sender, true); // Command has at least 1 argument: /review <arg>
 		switch (args[0]) { // /review args[0]
 		case "help": // Help cmd
-			SendMessageUtil.HELP.send(sender); // Sends textblock with commands and other help to player
-			break;
+			return SendMessageUtil.HELP.send(sender, true); // Sends textblock with commands and other help to player
 		case "list": // Opens Gui with all unreviewed reviews
 			if (!(sender instanceof Player))
 				return true; // Sender should be a Player in order to open up a Gui
-			Gui gui = GuiFactory.reviewGui((Player) sender, 1, null);
+			Gui gui = GuiFactory.reviewGui((Player) sender, 1, null); // Gui class should be rewritten
 			gui.open();
 			break;
 		case "info": // Displays info for a review
@@ -54,11 +53,15 @@ public class ReviewCmd implements CommandExecutor {
 			String id = args[1];
 			if (!StringUtils.isNumeric(id))
 				return true; // Prevent Cast exception; exits when not a valid number is given
-			if (DataFile.getInstance().getValue(Integer.valueOf(id)) == null)
+			if (DataFileManager.containsId(Integer.valueOf(id)))
 				return true; // Prevent nullpointer exception
-			String uuid = DataFile.getInstance().getUUIDString(Integer.valueOf(id)); // extracts Player UUID from datafile
+			String uuid = DataFileManager.getUUID(Integer.valueOf(id)); // extracts Player UUID from datafile
 			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid,
-					UserDataManager.getInstance().getUserData(uuid, id));
+					UserDataManager.getInstance().getUserData(Integer.valueOf(id)));
+			/*
+			 * ^^^^ This is a big problem.
+			 * SendMessageUtil replaces all placeholders from the message with the values of the parameters.
+			 */
 			break;
 		case "history":
 			if (!(sender instanceof Player))
@@ -69,14 +72,14 @@ public class ReviewCmd implements CommandExecutor {
 				target = p;
 			else
 				target = Bukkit.getOfflinePlayer(args[1]);
-			if(target == null)
+			if (target == null)
 				target = p;
 			UserDataFile file = UserDataManager.getInstance().getUserDataFile(String.valueOf(target.getUniqueId()));
-			if (!file.getYml().getKeys(false).contains("tickets"))
+			if (!file.getCustomYml().getYml().getKeys(false).contains("tickets"))
 				return SendMessageUtil.NO_PAST_REVIEWS.send(p, true);
 			ArrayList<GuiItem> items = new ArrayList<>();
-			for (String idKey : file.getYml().getConfigurationSection("tickets").getKeys(false)) {
-				items.add(GuiFactory.getHistoryItem(p, file.getUserData(idKey), target.getUniqueId().toString(), idKey));
+			for (String idKey : file.getCustomYml().getYml().getConfigurationSection("tickets").getKeys(false)) {
+				items.add(GuiFactory.getHistoryItem(p, file.getUserData(Integer.valueOf(idKey)), target.getUniqueId().toString(), idKey));
 			}
 			Gui historyGui = GuiFactory.historyGui(p, 1, null, items, p.getName());
 			historyGui.open();
@@ -84,10 +87,10 @@ public class ReviewCmd implements CommandExecutor {
 		case "score":
 			if (args.length < 3)
 				return true;
-			String scoreId = args[1];
+			int scoreId = Integer.valueOf(args[1]);
 			String score = args[2];
 			ReviewScore reviewScore = ReviewScore.fromString(score);
-			String userUUID = DataFile.getInstance().getUUIDString(Integer.valueOf(scoreId));
+			String userUUID = DataFileManager.getUUID(Integer.valueOf(scoreId));
 			UserDataFile userFile = UserDataManager.getInstance().getUserDataFile(userUUID);
 			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE,
 					String.valueOf(reviewScore.getStructurePoints()));
@@ -97,7 +100,7 @@ public class ReviewCmd implements CommandExecutor {
 					String.valueOf(reviewScore.getCompositionPoints()));
 			userFile.setString(scoreId, UserDataField.RESULT, String.valueOf(reviewScore.calculateOverall()));
 			userFile.setString(scoreId, UserDataField.STAFF, sender.getName().toString());
-			DataFile.getInstance().setReviewed(Integer.valueOf(scoreId), true);
+			DataFileManager.setReviewed(Integer.valueOf(scoreId), true);
 			break;
 		}
 		return true; // Returns true instead of false to prevent that the plugins sends annoying messages to the player

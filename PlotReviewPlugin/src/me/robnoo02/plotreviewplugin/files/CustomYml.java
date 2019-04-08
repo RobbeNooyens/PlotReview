@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -118,6 +119,10 @@ public class CustomYml {
 	 */
 	public boolean containsKey(String path, String key) {
 		return config.getConfigurationSection(path).getKeys(false).contains(key);
+	}
+	
+	public ConfigurationSection getConfigSection(String path) {
+		return config.getConfigurationSection(path);
 	}
 
 	/**

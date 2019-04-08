@@ -1,6 +1,6 @@
 package me.robnoo02.plotreviewplugin.review;
 
-import me.robnoo02.plotreviewplugin.files.DataFile;
+import me.robnoo02.plotreviewplugin.files.DataFileManager;
 
 /**
  * This class keeps track of the current Review ID.
@@ -25,7 +25,7 @@ public final class ReviewID {
 	 */
 	public static int generateID() {
 		count++;
-		DataFile.getInstance().updateIDProgress();
+		DataFileManager.updateIDProgress();
 		return count;
 	}
 	

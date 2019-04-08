@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * Each instance represents a userdata yml file.
@@ -24,7 +23,7 @@ public class UserDataFile {
 	 * Private in combination with static factory
 	 * @param uuid The uuid of a Reviewee
 	 */
-	private UserDataFile(UUID uuid) {
+	private UserDataFile(final UUID uuid) {
 		this.uuid = uuid.toString();
 		this.yml = CustomYml.createFileInFolder("userdata", this.uuid, true);
 	}
@@ -33,7 +32,7 @@ public class UserDataFile {
 	 * Returns an instance of a UserDataFile for a player
 	 * @return UserDataFile instance for given Player
 	 */
-	public static UserDataFile getUserDataFile(OfflinePlayer player) {
+	public static UserDataFile getUserDataFile(final OfflinePlayer player) {
 		return getUserDataFile(player.getUniqueId());
 	}
 
@@ -41,7 +40,7 @@ public class UserDataFile {
 	 * Returns an instance of a UserDataFile for a player with UUID
 	 * @return UserDataFile instance for given Player
 	 */
-	public static UserDataFile getUserDataFile(UUID uuid) {
+	public static UserDataFile getUserDataFile(final UUID uuid) {
 		UserDataFile file = new UserDataFile(uuid);
 		file.yml.setup();
 		file.yml.set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
@@ -71,8 +70,8 @@ public class UserDataFile {
 		 * @param id Review ticket ID
 		 * @return Path for yml
 		 */
-		public String getPath(String id) {
-			return "tickets." + id + "." + this.toString().toLowerCase();
+		public String getPath(int id) {
+			return "tickets." + String.valueOf(id) + "." + this.toString().toLowerCase();
 		}
 
 		public String getPlaceHolder() {
@@ -86,8 +85,8 @@ public class UserDataFile {
 	 * @param field Key for Reviewinfo value
 	 * @return String representing a part of the info from the Review ticket
 	 */
-	public String getString(String id, UserDataField field) {
-		return (String) yml.get(field.getPath(id));
+	public String getString(int id, UserDataField field) {
+		return yml.getString(field.getPath(id));
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class UserDataFile {
 	 * @param field Key for Reviewinfo
 	 * @param value Value to be set for the key
 	 */
-	public void setString(String id, UserDataField field, String value) {
+	public void setString(int id, UserDataField field, String value) {
 		yml.set(field.getPath(id), value);
 	}
 
@@ -104,15 +103,15 @@ public class UserDataFile {
 	 * Gets the ymlFile used by this instance.
 	 * @return YamlConfiguration for userdata configfile
 	 */
-	public YamlConfiguration getYml() {
-		return yml.getYml();
+	public CustomYml getCustomYml() {
+		return yml;
 	}
 
 	/**
 	 * @param id is ID of Review
 	 * @return HashMap containing all fields with review data
 	 */
-	public HashMap<UserDataField, String> getUserData(String id) {
+	public HashMap<UserDataField, String> getUserData(int id) {
 		HashMap<UserDataField, String> fields = new HashMap<>();
 		for (UserDataField field : UserDataField.values())
 			fields.put(field, getString(id, field));
