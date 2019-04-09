@@ -32,42 +32,29 @@ import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 public class SubmitManager implements DebugUtil {
 
-	private static final SubmitManager INSTANCE = new SubmitManager();
+	private static Set<UUID> submitQueue = new HashSet<>();
 
-	private final Set<UUID> submitQueue = new HashSet<>();
+//	public Set<UUID> getSubmitQueue() {
+//		return submitQueue;
+//	}
 
-	/**
-	 * Constructor
-	 * Private for Singleton
-	 */
-	private SubmitManager() {
-	}
-	
-	public static SubmitManager getInstance() {
-		return INSTANCE;
-	}
-
-	public Set<UUID> getSubmitQueue() {
-		return this.submitQueue;
-	}
-
-	public boolean isSubmitQueued(Player p) {
+	public static boolean isSubmitQueued(Player p) {
 		return submitQueue.contains(p.getUniqueId());
 	}
 
-	public void addSubmitQueue(Player p) {
+	public static void addSubmitQueue(Player p) {
 		submitQueue.add(p.getUniqueId());
 	}
 
-	public void removeSubmitQueue(Player p) {
+	public static void removeSubmitQueue(Player p) {
 		submitQueue.remove(p.getUniqueId());
 	}
 
-	public boolean submitPlot(Player p) {
-		int id = ReviewID.generateID(); // Generates unique ID for the Review
-		Plot plot = PlotUtil.getCurrentPlot(p); // Gets the plot the Player is standing on
+	public static boolean submitPlot(Player p) {
 		if (!possibleToSubmit(p))
 			return false;
+		int id = ReviewID.generateID(); // Generates unique ID for the Review
+		Plot plot = PlotUtil.getCurrentPlot(p); // Gets the plot the Player is standing on
 		HashMap<UserDataField, String> fields = new HashMap<>(); // HashMap to transfer Review data easily without creating new custom class Objects
 		fields.put(UserDataField.DATE, DateFormatterUtil.formatDate(new Date()));
 		fields.put(UserDataField.PLOT, plot.getId().toString());
@@ -79,30 +66,23 @@ public class SubmitManager implements DebugUtil {
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
 	}
 
-	public boolean possibleToSubmit(Player p) {
+	public static boolean possibleToSubmit(Player p) {
 		Plot plot = PlotPlayer.wrap(p).getCurrentPlot();
 		if (plot == null)
 			return SendMessageUtil.NOT_ON_PLOT.send(p, false); // Player can't be null
 		if (!plot.getOwners().contains(p.getUniqueId()))
 			return SendMessageUtil.CANT_SUBMIT.send(p, false); // Player should be an owner of the Plot
-		if (!canSubmit(plot))
+		if (!(DataFileManager.idFromPlot(plot) == null))
 			return SendMessageUtil.ALREADY_SUBMITTED.send(p, false); // Plot shouldn't be reviewed yet
 		return true;
 	}
 
 	/**
-	 * @return true when Plot isn't submitted or reviewed yet
-	 */
-	public boolean canSubmit(Plot plot) {
-		return DataFileManager.idFromPlot(plot) == null;
-	}
-
-	/**
 	 * @return a comma seperated list containing names of queued Players
 	 */
-	public String getSubmits() {
+	public static String getSubmits() {
 		StringBuilder builder = new StringBuilder();
-		for (UUID uuid : SubmitManager.getInstance().getSubmitQueue())
+		for (UUID uuid : SubmitManager.submitQueue)
 			builder.append("§b" + Bukkit.getOfflinePlayer(uuid).getName() + "§7,");
 		if (builder.length() == 0)
 			return "§7None";
