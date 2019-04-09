@@ -36,7 +36,7 @@ import com.mojang.authlib.properties.Property;
  * @author Robnoo02
  *
  */
-public class GuiUtil2 implements Listener {
+public class GuiUtility implements Listener {
 
 	/*
 	 * PLEASE NOTE:

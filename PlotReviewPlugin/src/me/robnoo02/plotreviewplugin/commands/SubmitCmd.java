@@ -23,26 +23,26 @@ public class SubmitCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player))
-			return true; // Sender should be a Player, not Console
-		Player p = (Player) sender; // Casting sender to Player
-		if (!cmd.getName().equalsIgnoreCase("submit")) // Stop if command doesn't start with /submit
-			return true; // Command is /submit
+			return true;
+		Player p = (Player) sender;
+		if (!cmd.getName().equalsIgnoreCase("submit"))
+			return true;
 		if (SubmitManager.isSubmitQueued(p)) {
 			if (args.length == 0)
-				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true); // Player should type /submit <confirm/cancel>
+				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true);
 			String confirmCancel = args[0];
-			if (confirmCancel.equalsIgnoreCase("confirm")) // /submit confirm -> submit plot -> remove from queue
-				SubmitManager.submitPlot(p); // Creates new ticket
-			else if (confirmCancel.equalsIgnoreCase("cancel")) // /submit cancel -> remove from queue
-				SendMessageUtil.CANCELLED.send(p); // No return because submit should still be removed from queue
+			if (confirmCancel.equalsIgnoreCase("confirm"))
+				SubmitManager.submitPlot(p);
+			else if (confirmCancel.equalsIgnoreCase("cancel"))
+				SendMessageUtil.CANCELLED.send(p);
 			else
-				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true); // Stop method to make sure submit won't be removed
+				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true);
 			SubmitManager.removeSubmitQueue(p);
 		} else {
 			if (PermissionUtil.SUBMIT_PLOT.hasAndWarn((Player) sender))
 				return true;
 			if (SubmitManager.possibleToSubmit(p))
-				SubmitManager.addSubmitQueue(p); // Wait for confirmation
+				SubmitManager.addSubmitQueue(p);
 			SendMessageUtil.SUBMIT.send(sender, true);
 		}
 		return true;

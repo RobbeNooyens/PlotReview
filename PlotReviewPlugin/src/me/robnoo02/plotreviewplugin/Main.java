@@ -11,7 +11,7 @@ import me.robnoo02.plotreviewplugin.commands.ReviewCmd;
 import me.robnoo02.plotreviewplugin.commands.SubmitCmd;
 import me.robnoo02.plotreviewplugin.files.ConfigManager;
 import me.robnoo02.plotreviewplugin.files.DataFile;
-import me.robnoo02.plotreviewplugin.guis.GuiUtil;
+import me.robnoo02.plotreviewplugin.guis.GuiUtility;
 
 public class Main extends JavaPlugin {
 	
@@ -19,7 +19,7 @@ public class Main extends JavaPlugin {
 		Bukkit.getLogger().info(getDataFolder().toString());
 		saveDefaultConfig();
 		setupUserDataFolder();
-		Bukkit.getPluginManager().registerEvents(new GuiUtil(), this);
+		Bukkit.getPluginManager().registerEvents(new GuiUtility(), this);
 		Bukkit.getPluginManager().registerEvents(new PreCommandEvent(), this);
 		getCommand("review").setExecutor(new ReviewCmd());
 		getCommand("submit").setExecutor(new SubmitCmd());

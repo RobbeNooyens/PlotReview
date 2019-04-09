@@ -1,6 +1,5 @@
 package me.robnoo02.plotreviewplugin.guis;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -11,10 +10,10 @@ import org.bukkit.entity.Player;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
 import me.robnoo02.plotreviewplugin.files.DataFileManager;
-import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
-import me.robnoo02.plotreviewplugin.guis.GuiUtil2.Gui;
-import me.robnoo02.plotreviewplugin.guis.GuiUtil2.GuiItem;
+import me.robnoo02.plotreviewplugin.files.UserDataManager;
+import me.robnoo02.plotreviewplugin.guis.GuiUtility.Gui;
+import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 import me.robnoo02.plotreviewplugin.utils.RankUtil;
 
@@ -35,10 +34,12 @@ public class ReviewListGui extends Gui implements SkullTextures {
 		this.setItem(50, getNextPage());
 	}
 
-	public static void show(Player p, int page, HashMap<UserDataField, String> info, String playerUUID,
-			ArrayList<GuiItem> items, Gui previousGui) {
+	public static boolean show(Player p, int page, Gui previousGui) {
+		if(p == null || page < 1)
+			return false;
 		Gui gui = new ReviewListGui(p, page, previousGui);
 		gui.open();
+		return true;
 	}
 	
 	public static void show(ReviewListGui gui) {
@@ -50,7 +51,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	 * @return GuiItem to go to the next page, only used in reviewGui() method.
 	 */
 	private GuiItem getNextPage() {
-		int total = GuiUtil.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
+		int total = GuiUtility.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
 		if (this.getPage() >= total)
 			return null;
 		return new GuiItem.Builder().name("&aNext Page").customSkull(ARROW_RIGHT)
@@ -62,7 +63,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	 * @return GuiItem to go back to the previous page.
 	 */
 	private GuiItem getPreviousPage() {
-		int total = GuiUtil.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
+		int total = GuiUtility.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
 		if (this.getPage() < 2 || this.getGuiLink() == null)
 			return null;
 		return new GuiItem.Builder().name("&cPrevious Page").customSkull(ARROW_LEFT)
