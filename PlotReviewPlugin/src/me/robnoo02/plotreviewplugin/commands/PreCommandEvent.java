@@ -22,9 +22,9 @@ public class PreCommandEvent implements Listener {
 	public void onCommand(PlayerCommandPreprocessEvent e) { // Removes submit from queue + end convo
 		Player p = e.getPlayer();
 		try {
-			if (SubmitManager.getInstance().isSubmitQueued(p) && !e.getMessage().toLowerCase().startsWith("/submit")
+			if (SubmitManager.isSubmitQueued(p) && !e.getMessage().toLowerCase().startsWith("/submit")
 					&& !e.getMessage().toLowerCase().startsWith("/prdebug")) {
-				SubmitManager.getInstance().removeSubmitQueue(p);
+				SubmitManager.removeSubmitQueue(p);
 				SendMessageUtil.CANCELLED.send(p);
 			}
 		} catch (Exception ignore) {

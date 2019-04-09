@@ -44,6 +44,7 @@ public class ReviewCmd implements CommandExecutor {
 		case "list": // Opens Gui with all unreviewed reviews
 			if (!(sender instanceof Player))
 				return true; // Sender should be a Player in order to open up a Gui
+			//ReviewListGui.show(p, page, info, playerUUID, items, previousGui);
 			Gui gui = GuiFactory.reviewGui((Player) sender, 1, null); // Gui class should be rewritten
 			gui.open();
 			break;

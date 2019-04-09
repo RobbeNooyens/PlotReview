@@ -41,7 +41,7 @@ public class DebugCmd implements CommandExecutor {
 		switch (args[0]) {
 		case "submits": // Shows queue of submits
 			sender.sendMessage("§aSubmits:");
-			sender.sendMessage(SubmitManager.getInstance().getSubmits());
+			sender.sendMessage(SubmitManager.getSubmits());
 			break;
 		case "config":
 			FileConfiguration config = Main.getInstance().getConfig();
