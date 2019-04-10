@@ -19,10 +19,10 @@ public class DataFileManager {
 	/**
 	 * Extracts all unreviewed reviews saved in yml.
 	 * 
-	 * @return HashMap containing Review ID and reference from datafile
+	 * @return HashMap containing the ticketId as key and a String value from a datafile.
 	 */
 	public static HashMap<Integer, String> getUnreviewedReferences() {
-		Set<String> keys = DataFile.getInstance().getCustomYml().getYml().getConfigurationSection(REVIEWPATH)
+		Set<String> keys = DataFile.getCustomYml().getYml().getConfigurationSection(REVIEWPATH)
 				.getKeys(false);
 		HashMap<Integer, String> uuidOutput = new HashMap<>();
 		for (String key : keys) { // Loops through keys to determine which Reviews aren't reviewed yet
@@ -43,11 +43,11 @@ public class DataFileManager {
 	}
 
 	public static String getValue(int reviewId) {
-		return DataFile.getInstance().getCustomYml().getString(REVIEWPATH + "." + String.valueOf(reviewId));
+		return DataFile.getCustomYml().getString(REVIEWPATH + "." + String.valueOf(reviewId));
 	}
 
 	public static boolean containsId(int reviewId) {
-		return DataFile.getInstance().getCustomYml().getConfigSection(REVIEWPATH).getKeys(false)
+		return DataFile.getCustomYml().getConfigSection(REVIEWPATH).getKeys(false)
 				.contains(String.valueOf(reviewId));
 	}
 
@@ -56,11 +56,11 @@ public class DataFileManager {
 	}
 
 	public static void addReview(int id, String uuid) {
-		DataFile.getInstance().getCustomYml().set(REVIEWPATH + "." + String.valueOf(id), uuid);
+		DataFile.getCustomYml().set(REVIEWPATH + "." + String.valueOf(id), uuid);
 	}
 
 	public static String idFromPlot(final Plot plot) {
-		ConfigurationSection section = DataFile.getInstance().getCustomYml().getYml()
+		ConfigurationSection section = DataFile.getCustomYml().getYml()
 				.getConfigurationSection("reviews");
 		String formattedPlot = PlotUtil.formatPlot(plot);
 		for (String s : section.getKeys(false))
@@ -83,11 +83,11 @@ public class DataFileManager {
 	 */
 
 	public static int getIDProgress() {
-		return (int) DataFile.getInstance().getCustomYml().getInt(IDPATH);
+		return (int) DataFile.getCustomYml().getInt(IDPATH);
 	}
 
 	public static void updateIDProgress() {
-		DataFile.getInstance().getCustomYml().set(IDPATH, ReviewID.getCurrentCount());
+		DataFile.getCustomYml().set(IDPATH, ReviewID.getCurrentCount());
 	}
 
 }

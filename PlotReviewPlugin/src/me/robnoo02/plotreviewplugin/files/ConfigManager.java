@@ -9,50 +9,49 @@ import me.robnoo02.plotreviewplugin.review.ScoreAspect;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
- * This singleton writes and reads data to and from the config.yml.
+ * This class represents the config.yml.
+ * It reads and writes data to that file.
+ * All fields and methods are static since there's only one config.
  * 
  * @author Robnoo02
  *
  */
 public final class ConfigManager {
 
-	private static final ConfigManager INSTANCE = new ConfigManager(); // Singleton instance
 	private static final String MESSAGES_PATH = "messages."; // Path in config file to messages
-	private final Main plugin; // Main instance
+	private static Main plugin; // Main instance
 
-	/**
-	 * Constructor Private for singleton
-	 */
-	private ConfigManager() {
-		this.plugin = Main.getInstance();
+	public static void setup() {
+		if(plugin == null) {
+			plugin = Main.getInstance();
+			setEnumMessages();
+		}
 	}
-
-	/**
-	 * Static factory method to get singleton
-	 */
-	public static ConfigManager getInstance() {
-		return INSTANCE;
-	}
-
+	
 	/**
 	 * Returns string from Yml
+	 * @param key is the path in the yml
+	 * @return the value of the given key
 	 */
-	public String getString(String key) {
+	public static String getString(String key) {
 		return plugin.getConfig().getString(key);
 	}
 
 	/**
 	 * Saves message block to config
+	 * @param path is the path where the list should be saved to
+	 * @param list is the list of String that should be saved
 	 */
-	public void setList(String path, List<String> list) {
+	public static void setList(String path, List<String> list) {
 		plugin.getConfig().set(path, list);
 		plugin.saveConfig();
 	}
 
 	/**
 	 * Reads all messages from config and sets Enum values for SendMessageUtil
+	 * Only called on setup
 	 */
-	public void setEnumMessages() {
+	private static void setEnumMessages() {
 		for (SendMessageUtil messageVar : SendMessageUtil.values()) {
 			String path = MESSAGES_PATH + messageVar.toString().toLowerCase();
 			if (plugin.getConfig().contains(path)) {
@@ -66,7 +65,7 @@ public final class ConfigManager {
 		}
 	}
 
-	public HashMap<ScoreAspect, Double> getScore(String score) {
+	public static HashMap<ScoreAspect, Double> getScore(String score) {
 		String scoreFormat = plugin.getConfig().getString("score");
 		String separator = plugin.getConfig().getString("score-separator");
 		HashMap<ScoreAspect, Double> scores = new HashMap<>();

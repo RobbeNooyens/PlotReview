@@ -16,19 +16,21 @@ import me.robnoo02.plotreviewplugin.guis.GuiUtility;
 public class Main extends JavaPlugin {
 	
 	public void onEnable() {
-		Bukkit.getLogger().info(getDataFolder().toString());
-		saveDefaultConfig();
-		setupUserDataFolder();
+		// Setup classes implementing Listener
 		Bukkit.getPluginManager().registerEvents(new GuiUtility(), this);
 		Bukkit.getPluginManager().registerEvents(new PreCommandEvent(), this);
+		// Registering classes implementing CommandExecutor
 		getCommand("review").setExecutor(new ReviewCmd());
 		getCommand("submit").setExecutor(new SubmitCmd());
 		getCommand("prdebug").setExecutor(new DebugCmd());
-		ConfigManager.getInstance().setEnumMessages();
-		DataFile.getInstance().setup();
+		// Setup files and file classes
+		saveDefaultConfig();
+		setupUserDataFolder();
+		ConfigManager.setup();
+		DataFile.setup();
 	}
 	
-	public void setupUserDataFolder() {
+	private void setupUserDataFolder() {
 		File file = new File(this.getDataFolder() + File.separator + "userdata");
 		if(!file.exists())
 			file.mkdirs();

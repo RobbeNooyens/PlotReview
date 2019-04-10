@@ -12,22 +12,30 @@ import me.robnoo02.plotreviewplugin.files.UserDataManager;
 
 public class Query {
 	
+	/**
+	 * A QueryElement is a single piece of info of a ticket.
+	 * Information can be requested with the request() method.
+	 */
 	public static enum QueryElement {
 
 		TICKET_ID, REVIEWEE_NAME,
 		REVIEWEE_UUID, PLOT_ID, WORLD, REVIEWED_BY_STAFF, // datafile.yml
 		RANK, CREATION_DATE, STRUCTURE_SCORE, TERRAIN_SCORE, ORGANICS_SCORE, COMPOSITION_SCORE, RESULT, STAFF; // userdata
 		
-		public String request(int reviewId) {
-			if(DataFileManager.containsId(reviewId))
+		/**
+		 * Reads one specific element of a ticket.
+		 * @param ticketId is the id number of the ticket
+		 */
+		public String request(int ticketId) {
+			if(DataFileManager.containsId(ticketId))
 				return null;
 			switch(this) {
 			case TICKET_ID:
-				return String.valueOf(reviewId);
+				return String.valueOf(ticketId);
 			case REVIEWEE_NAME:
-				return Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.getUUID(reviewId))).getName();
+				return Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.getUUID(ticketId))).getName();
 			case COMPOSITION_SCORE:
-				break;
+				return UserDataManager.getUserData(ticketId).get(UserDataField.COMPOSITION_SCORE);
 			case CREATION_DATE:
 				break;
 			case ORGANICS_SCORE:
@@ -47,7 +55,7 @@ public class Query {
 			case TERRAIN_SCORE:
 				break;
 			case REVIEWEE_UUID:
-				return DataFileManager.getUUID(reviewId);
+				return DataFileManager.getUUID(ticketId);
 			case WORLD:
 				break;
 			default:
@@ -84,7 +92,7 @@ public class Query {
 	private static HashMap<QueryElement, String> requestInfoCommand(int reviewId){
 		HashMap<QueryElement, String> output = new HashMap<>();
 		String idValue = DataFileManager.getValue(reviewId);
-		HashMap<UserDataField, String> userData = UserDataManager.getInstance().getUserData(reviewId);
+		HashMap<UserDataField, String> userData = UserDataManager.getUserData(reviewId);
 		OfflinePlayer reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.strip(idValue, "\\+", 0)));
 		output.put(QueryElement.TICKET_ID, String.valueOf(reviewId));
 		output.put(QueryElement.REVIEWEE_NAME, reviewee.getName());

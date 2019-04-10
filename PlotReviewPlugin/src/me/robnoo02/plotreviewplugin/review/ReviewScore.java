@@ -31,7 +31,7 @@ public final class ReviewScore {
 	}
 
 	private static ReviewScore extract(String score) {
-		HashMap<ScoreAspect, Double> scores = ConfigManager.getInstance().getScore(score); // pointsStringArray
+		HashMap<ScoreAspect, Double> scores = ConfigManager.getScore(score); // pointsStringArray
 		return new ReviewScore(scores);
 	}
 

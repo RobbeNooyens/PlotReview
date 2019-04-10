@@ -47,7 +47,7 @@ public class ReviewCmd implements CommandExecutor {
 			if (DataFileManager.containsId(Integer.valueOf(id))) return true; // Prevent nullpointer exception
 			String uuid = DataFileManager.getUUID(Integer.valueOf(id)); // extracts Player UUID from datafile
 			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid,
-					UserDataManager.getInstance().getUserData(Integer.valueOf(id)));
+					UserDataManager.getUserData(Integer.valueOf(id)));
 			/*
 			 * ^^^^ This is a big problem. SendMessageUtil replaces all placeholders from
 			 * the message with the values of the parameters.
@@ -62,7 +62,7 @@ public class ReviewCmd implements CommandExecutor {
 			else
 				target = Bukkit.getOfflinePlayer(args[1]);
 			if (target == null) target = p;
-			UserDataFile file = UserDataManager.getInstance().getUserDataFile(String.valueOf(target.getUniqueId()));
+			UserDataFile file = UserDataManager.getUserDataFile(String.valueOf(target.getUniqueId()));
 			if (!file.getCustomYml().getYml().getKeys(false).contains("tickets"))
 				return SendMessageUtil.NO_PAST_REVIEWS.send(p, true); // No review tickets saved for this player
 			ArrayList<GuiItem> items = new ArrayList<>();
@@ -77,7 +77,7 @@ public class ReviewCmd implements CommandExecutor {
 			String score = args[2];
 			ReviewScore reviewScore = ReviewScore.fromString(score);
 			String userUUID = DataFileManager.getUUID(Integer.valueOf(scoreId));
-			UserDataFile userFile = UserDataManager.getInstance().getUserDataFile(userUUID);
+			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
 			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE,
 					String.valueOf(reviewScore.getStructurePoints()));
 			userFile.setString(scoreId, UserDataField.TERRAIN_SCORE, String.valueOf(reviewScore.getTerrainPoints()));

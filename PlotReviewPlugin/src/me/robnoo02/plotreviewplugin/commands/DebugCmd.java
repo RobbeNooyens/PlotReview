@@ -56,7 +56,7 @@ public class DebugCmd implements CommandExecutor {
 			}
 			break;
 		case "datafile": // Prints content of datafile.yml in console or chat
-			YamlConfiguration datafile = DataFile.getInstance().getCustomYml().getYml();
+			YamlConfiguration datafile = DataFile.getCustomYml().getYml();
 			sender.sendMessage("§3id-counter§8: §7" + datafile.getString("id-counter"));
 			sender.sendMessage("§3reviews:");
 			for (String key : datafile.getConfigurationSection("reviews").getKeys(false)) {
@@ -72,7 +72,7 @@ public class DebugCmd implements CommandExecutor {
 				sender.sendMessage("§cFile doesn't exist");
 				return true;
 			}
-			UserDataFile userFile = UserDataManager.getInstance().getUserDataFile(uuid);
+			UserDataFile userFile = UserDataManager.getUserDataFile(uuid);
 			sender.sendMessage("§3latest-name§8: §7" + userFile.getCustomYml().getYml().getString("latest-name"));
 			sender.sendMessage("§3tickets§8:");
 			for(String key: userFile.getCustomYml().getYml().getConfigurationSection("tickets").getKeys(false)) {
