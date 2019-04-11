@@ -50,8 +50,12 @@ public class UserDataManager {
 	 * @param id Review ticket ID
 	 * @return HashMap containing all available reviewdata for a Player
 	 */
-	public static  HashMap<UserDataField, String> getUserData(final int id) {
-		UserDataFile file = getUserDataFile(id); // Gets 
-		return file.getUserData(id);
+	public static  HashMap<UserDataField, String> getUserData(final int ticketId) {
+		UserDataFile file = getUserDataFile(ticketId); // Gets 
+		return file.getUserData(ticketId);
+	}
+	
+	public static String getUserDataField(final int ticketId, UserDataField field) {
+		return getUserDataFile(ticketId).getString(ticketId, field);
 	}
 }

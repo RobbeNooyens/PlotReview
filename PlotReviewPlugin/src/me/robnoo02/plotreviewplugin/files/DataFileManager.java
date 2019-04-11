@@ -33,40 +33,13 @@ public class DataFileManager {
 		return uuidOutput;
 	}
 
-	public static String getReviewInfo(int reviewId, int infoPos) {
-		return strip(getValue(reviewId), "\\+", infoPos);
-	}
-
-	public static String strip(final String input, final String regex, final int index) {
-		String[] info = input.split(regex);
-		return (index >= info.length) ? null : info[index];
-	}
-
-	public static String getValue(int reviewId) {
-		return DataFile.getCustomYml().getString(REVIEWPATH + "." + String.valueOf(reviewId));
-	}
-
-	public static boolean containsId(int reviewId) {
+	public static boolean containsId(final int ticketId) {
 		return DataFile.getCustomYml().getConfigSection(REVIEWPATH).getKeys(false)
-				.contains(String.valueOf(reviewId));
+				.contains(String.valueOf(ticketId));
 	}
-
-	public static String getUUID(int reviewId) {
-		return getReviewInfo(reviewId, 0);
-	}
-
+	
 	public static void addReview(int id, String uuid) {
 		DataFile.getCustomYml().set(REVIEWPATH + "." + String.valueOf(id), uuid);
-	}
-
-	public static String idFromPlot(final Plot plot) {
-		ConfigurationSection section = DataFile.getCustomYml().getYml()
-				.getConfigurationSection("reviews");
-		String formattedPlot = PlotUtil.formatPlot(plot);
-		for (String s : section.getKeys(false))
-			if (section.getString(s).contains(formattedPlot))
-				return s;
-		return null;
 	}
 
 	public static void setReviewed(int plotId, boolean bool) {
@@ -77,10 +50,50 @@ public class DataFileManager {
 			current = current.replaceAll("true", String.valueOf(bool));
 		addReview(plotId, current);
 	}
+	
+	/********************
+	 * Methods used to get info from the datafile.yml
+	 ********************/
+	
+	public static String getValue(final int ticketId) {
+		return DataFile.getCustomYml().getString(REVIEWPATH + "." + String.valueOf(ticketId));
+	}
+	
+	public static String strip(final String input, final String regex, final int index) {
+		String[] info = input.split(regex);
+		return (index >= info.length) ? null : info[index];
+	}
+	
+	public static String getReviewInfo(int ticketId, int infoPos) {
+		return strip(getValue(ticketId), "\\+", infoPos);
+	}
+	
+	public static String getUUID(final int ticketId) {
+		return getReviewInfo(ticketId, 0);
+	}
+	
+	public static String getPlotInfo(final int ticketId) {
+		return getReviewInfo(ticketId, 1);
+	}
 
-	/*
-	 * ID Methods
-	 */
+	public static String getIsReviewed(final int ticketId) {
+		return getReviewInfo(ticketId, 2);
+	}
+	
+	
+	public static String idFromPlot(final Plot plot) {
+		ConfigurationSection section = DataFile.getCustomYml().getYml()
+				.getConfigurationSection("reviews");
+		String formattedPlot = PlotUtil.formatPlot(plot);
+		for (String s : section.getKeys(false))
+			if (section.getString(s).contains(formattedPlot))
+				return s;
+		return null;
+	}
+
+	/**************
+	 * Methods related to the ID-counter field
+	 **************/
 
 	public static int getIDProgress() {
 		return (int) DataFile.getCustomYml().getInt(IDPATH);
