@@ -3,8 +3,11 @@
 # - none
 ranks:
   player: '&8[Player]'
-score: '%STRUCTURE%-%TERRAIN%-%ORGANICS%-%COMPOSITION%'
-score-separator: '-'
+score-syntax:
+  structure: 1
+  terrain: 2
+  organics: 3
+  composition: 4
 messages:
   plugin_info:
   - '§8§m-----------------------------------------------------'

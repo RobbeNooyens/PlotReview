@@ -23,7 +23,6 @@ import me.robnoo02.plotreviewplugin.files.DataFileManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
-import me.robnoo02.plotreviewplugin.review.ReviewReference;
 import me.robnoo02.plotreviewplugin.utils.DateFormatterUtil;
 import me.robnoo02.plotreviewplugin.utils.DebugUtil;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;
@@ -33,10 +32,6 @@ import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 public class SubmitManager implements DebugUtil {
 
 	private static Set<UUID> submitQueue = new HashSet<>();
-
-//	public Set<UUID> getSubmitQueue() {
-//		return submitQueue;
-//	}
 
 	public static boolean isSubmitQueued(Player p) {
 		return submitQueue.contains(p.getUniqueId());
@@ -61,8 +56,7 @@ public class SubmitManager implements DebugUtil {
 		fields.put(UserDataField.RANK, RankUtil.getRankName(p));
 		fields.put(UserDataField.WORLD, plot.getWorldName());
 		UserDataManager.setUserData(id, fields); // Adds review to userdatafile
-		String reference = ReviewReference.stringFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false"); // Creates a Reference
-		DataFileManager.addReview(id, reference); // Saves Review to datafile
+		DataFileManager.addReview(id, DataFileManager.toDataFileFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false")); // Saves Review to datafile
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
 	}
 

@@ -7,13 +7,13 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.intellectualcrafters.plot.object.Plot;
 
+import me.robnoo02.plotreviewplugin.Query;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
-import me.robnoo02.plotreviewplugin.review.ReviewReference;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 
 public class DataFileManager {
 
-	private static final String REVIEWPATH = "reviews";
+	private static final String REVIEWPATH = "reviews.";
 	private static final String IDPATH = "id-counter";
 
 	/**
@@ -28,7 +28,7 @@ public class DataFileManager {
 		for (String key : keys) { // Loops through keys to determine which Reviews aren't reviewed yet
 			String value = getValue(Integer.valueOf(key));
 			if (value.contains("false"))
-				uuidOutput.put(Integer.valueOf(key), ReviewReference.getUUID(value)); // Adds if not reviewed
+				uuidOutput.put(Integer.valueOf(key), Query.QueryElement.REVIEWEE_UUID.request(Integer.valueOf(key))); // Adds if not reviewed
 		}
 		return uuidOutput;
 	}
@@ -38,8 +38,8 @@ public class DataFileManager {
 				.contains(String.valueOf(ticketId));
 	}
 	
-	public static void addReview(int id, String uuid) {
-		DataFile.getCustomYml().set(REVIEWPATH + "." + String.valueOf(id), uuid);
+	public static void addReview(int id, String value) {
+		DataFile.getCustomYml().set(REVIEWPATH + String.valueOf(id), value);
 	}
 
 	public static void setReviewed(int plotId, boolean bool) {
@@ -51,12 +51,22 @@ public class DataFileManager {
 		addReview(plotId, current);
 	}
 	
+	public static String toDataFileFormat(String... strings) {
+		StringBuilder builder = new StringBuilder();
+		for(String s: strings) {
+			builder.append(s);
+			builder.append("+");
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		return builder.toString();
+	}
+	
 	/********************
 	 * Methods used to get info from the datafile.yml
 	 ********************/
 	
 	public static String getValue(final int ticketId) {
-		return DataFile.getCustomYml().getString(REVIEWPATH + "." + String.valueOf(ticketId));
+		return DataFile.getCustomYml().getString(REVIEWPATH + String.valueOf(ticketId));
 	}
 	
 	public static String strip(final String input, final String regex, final int index) {

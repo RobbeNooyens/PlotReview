@@ -1,6 +1,7 @@
 package me.robnoo02.plotreviewplugin.commands;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -18,7 +19,7 @@ import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreviewplugin.guis.HistoryGui;
 import me.robnoo02.plotreviewplugin.guis.ReviewListGui;
-import me.robnoo02.plotreviewplugin.review.ReviewScore;
+import me.robnoo02.plotreviewplugin.review.ScoreAspect;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
@@ -46,13 +47,12 @@ public class ReviewCmd implements CommandExecutor {
 			if (!StringUtils.isNumeric(id)) return true; // Prevent Cast exception; exits when not a valid number is given
 			if (DataFileManager.containsId(Integer.valueOf(id))) return true; // Prevent nullpointer exception
 			String uuid = DataFileManager.getUUID(Integer.valueOf(id)); // extracts Player UUID from datafile
-			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid,
-					UserDataManager.getUserData(Integer.valueOf(id)));
+			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid, UserDataManager.getUserData(Integer.valueOf(id)));
 			/*
 			 * ^^^^ This is a big problem. SendMessageUtil replaces all placeholders from
 			 * the message with the values of the parameters.
 			 */
-			break;
+			return true;
 		case "history":
 			if (!(sender instanceof Player)) return true; // Sender should be a Player
 			Player p = (Player) sender;
@@ -72,24 +72,24 @@ public class ReviewCmd implements CommandExecutor {
 			}
 			return HistoryGui.show(p, 1, items, null);
 		case "score":
+			if(!(sender instanceof Player))
+				return true;
 			if (args.length < 3) return true;
 			int scoreId = Integer.valueOf(args[1]);
-			String score = args[2];
-			ReviewScore reviewScore = ReviewScore.fromString(score);
 			String userUUID = DataFileManager.getUUID(Integer.valueOf(scoreId));
 			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
-			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE,
-					String.valueOf(reviewScore.getStructurePoints()));
-			userFile.setString(scoreId, UserDataField.TERRAIN_SCORE, String.valueOf(reviewScore.getTerrainPoints()));
-			userFile.setString(scoreId, UserDataField.ORGANICS_SCORE, String.valueOf(reviewScore.getOrganicsPoints()));
-			userFile.setString(scoreId, UserDataField.COMPOSITION_SCORE,
-					String.valueOf(reviewScore.getCompositionPoints()));
-			userFile.setString(scoreId, UserDataField.RESULT, String.valueOf(reviewScore.calculateOverall()));
-			userFile.setString(scoreId, UserDataField.STAFF, sender.getName().toString());
+			HashMap<ScoreAspect, String> scores = ScoreAspect.fromString(args[2]);
+			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE, scores.get(ScoreAspect.STRUCTURE));
+			userFile.setString(scoreId, UserDataField.TERRAIN_SCORE, scores.get(ScoreAspect.TERRAIN));
+			userFile.setString(scoreId, UserDataField.ORGANICS_SCORE, scores.get(ScoreAspect.ORGANICS));
+			userFile.setString(scoreId, UserDataField.COMPOSITION_SCORE, scores.get(ScoreAspect.COMPOSITION));
+			userFile.setString(scoreId, UserDataField.RESULT, String.valueOf(ScoreAspect.calculateOverall(scores)));
+			userFile.setString(scoreId, UserDataField.STAFF, ((Player) sender).getUniqueId().toString());
 			DataFileManager.setReviewed(Integer.valueOf(scoreId), true);
-			break;
+			return true;
+		default:
+			return true;
 		}
-		return true; // Returns true instead of false to prevent that the plugins sends annoying messages to the player
 	}
 
 }

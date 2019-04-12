@@ -1,11 +1,9 @@
 package me.robnoo02.plotreviewplugin.files;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import me.robnoo02.plotreviewplugin.Main;
-import me.robnoo02.plotreviewplugin.review.ScoreAspect;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
@@ -65,7 +63,7 @@ public final class ConfigManager {
 		}
 	}
 
-	public static HashMap<ScoreAspect, Double> getScore(String score) {
+	/*public static HashMap<ScoreAspect, Double> getScore(String score) {
 		String scoreFormat = plugin.getConfig().getString("score");
 		String separator = plugin.getConfig().getString("score-separator");
 		HashMap<ScoreAspect, Double> scores = new HashMap<>();
@@ -86,5 +84,5 @@ public final class ConfigManager {
 			}
 		}
 		return scores;
-	}
+	}*/
 }
