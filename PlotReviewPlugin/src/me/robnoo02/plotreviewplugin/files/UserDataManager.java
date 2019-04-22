@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 /**
  * This singleton stores UserDataFile objects.
@@ -25,7 +27,7 @@ public class UserDataManager {
 			return getUserDataFile(String.valueOf(uuidString));
 		final UUID uuid = UUID.fromString(uuidString); // Converts String uuid to UUID object
 		if (!files.containsKey(uuid)) // Checks if UserDataFile object for specific UUID exists.
-			files.put(uuid, UserDataFile.getUserDataFile(uuid)); // Creates new instance if not existed.
+			files.put(uuid, getUserDataFile(uuid)); // Creates new instance if not existed.
 		return files.get(uuid); // Returns UserDataFile for UUID
 	}
 	
@@ -33,5 +35,15 @@ public class UserDataManager {
 		return getUserDataFile(DataFileManager.getUUID(ticketId));
 	}
 	
+	private static UserDataFile getUserDataFile(UUID uuid) {
+		UserDataFile file = new UserDataFile(uuid);
+		file.getCustomYml().setup();
+		file.getCustomYml().set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
+		return file;
+	}
+	
+	public static UserDataFile getUserDataFile(final OfflinePlayer player) {
+		return getUserDataFile(player.getUniqueId().toString());
+	}
 	
 }

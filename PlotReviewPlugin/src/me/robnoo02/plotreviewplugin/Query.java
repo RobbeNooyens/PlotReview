@@ -134,16 +134,16 @@ public class Query {
 	public static enum QueryGroup {
 		INFO, HISTORY, GUI, SCORES;
 
-		public HashMap<QueryElement, String> group(int reviewId) {
+		public HashMap<QueryElement, String> group(int ticketId) {
 			switch (this) {
 			case GUI:
-				return requestReviewsGui(reviewId);
+				return requestReviewsGui(ticketId);
 			case HISTORY:
-				return requestHistoryCommand(reviewId);
+				return requestHistoryCommand(ticketId);
 			case INFO:
-				return requestInfoCommand(reviewId);
+				return requestInfoCommand(ticketId);
 			case SCORES:
-				return requestScores(reviewId);
+				return requestScores(ticketId);
 			default:
 				return null;
 			}

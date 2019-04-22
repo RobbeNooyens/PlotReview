@@ -20,7 +20,7 @@ import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreviewplugin.guis.HistoryGui;
 import me.robnoo02.plotreviewplugin.guis.ReviewListGui;
 import me.robnoo02.plotreviewplugin.score.STOC;
-import me.robnoo02.plotreviewplugin.score.STOCManager;
+import me.robnoo02.plotreviewplugin.score.STOCMaths;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
@@ -84,7 +84,7 @@ public class ReviewCmd implements CommandExecutor {
 			userFile.setString(ticketId, TicketDataField.TERRAIN_SCORE, scores.get(STOC.TERRAIN));
 			userFile.setString(ticketId, TicketDataField.ORGANICS_SCORE, scores.get(STOC.ORGANICS));
 			userFile.setString(ticketId, TicketDataField.COMPOSITION_SCORE, scores.get(STOC.COMPOSITION));
-			userFile.setString(ticketId, TicketDataField.STOC, String.valueOf(STOCManager.calcAverage(scores, ticketId)));
+			userFile.setString(ticketId, TicketDataField.STOC, String.valueOf(STOCMaths.calcAverage(scores, ticketId)));
 			userFile.setString(ticketId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());
 			DataFileManager.setReviewed(Integer.valueOf(ticketId), true);
 			return true;

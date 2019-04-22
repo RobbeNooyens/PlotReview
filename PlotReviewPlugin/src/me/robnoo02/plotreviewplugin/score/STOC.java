@@ -30,6 +30,11 @@ public enum STOC {
 			score.setIndex(Integer.valueOf(index));
 		}
 	}
+	
+	public String getScore(String scores) {
+		String[] info = scores.split("-");
+		return info[getIndex()];
+	}
 
 	public static HashMap<STOC, Double> fromStringDoubles(String scores) {
 		String[] info = scores.split("-");

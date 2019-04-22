@@ -3,9 +3,6 @@ package me.robnoo02.plotreviewplugin.files;
 import java.util.HashMap;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 /**
  * Each instance represents a userdata yml file.
  * A UserDataFile contains a Player uuid and a refernce to its yml in the userdata folder.
@@ -20,31 +17,11 @@ public class UserDataFile {
 
 	/**
 	 * Constructor
-	 * Private in combination with static factory
 	 * @param uuid The uuid of a Reviewee
 	 */
-	private UserDataFile(final UUID uuid) {
+	public UserDataFile(final UUID uuid) {
 		this.uuid = uuid.toString();
 		this.yml = CustomYml.createFileInFolder("userdata", this.uuid, true);
-	}
-
-	/**
-	 * Returns an instance of a UserDataFile for a player
-	 * @return UserDataFile instance for given Player
-	 */
-	public static UserDataFile getUserDataFile(final OfflinePlayer player) {
-		return getUserDataFile(player.getUniqueId());
-	}
-
-	/**
-	 * Returns an instance of a UserDataFile for a player with UUID
-	 * @return UserDataFile instance for given Player
-	 */
-	public static UserDataFile getUserDataFile(final UUID uuid) {
-		UserDataFile file = new UserDataFile(uuid);
-		file.yml.setup();
-		file.yml.set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
-		return file;
 	}
 	
 	/**
@@ -63,7 +40,7 @@ public class UserDataFile {
 	 *
 	 */
 	public static enum TicketDataField {
-		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), STOC("%stoc%"), STRUCTURE_SCORE(
+		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), STOC("%stoc%"), AVERAGE_STOC("%average_stoc%"), STRUCTURE_SCORE(
 				"%structure_score%"), TERRAIN_SCORE("%terrain_score%"), ORGANICS_SCORE(
 						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%"), REVIEWED("%reviewed%");
 

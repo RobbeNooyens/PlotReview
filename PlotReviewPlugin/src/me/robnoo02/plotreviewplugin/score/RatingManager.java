@@ -7,11 +7,11 @@ import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 public class RatingManager {
 	
 	public static double getRating(OfflinePlayer player) {
-		return STOCManager.calcTotalStoc() * calcStocPerPlot(player) * (STOCManager.calcAverageScore() / 1000);
+		return STOCMaths.calcTotalStoc(player.getUniqueId().toString()) * calcStocPerPlot(player) * (STOCMaths.calcAverageScore() / 1000);
 	}
 	
 	private static double calcStocPerPlot(OfflinePlayer player) {
-		return STOCManager.calcTotalStoc() / PlotUtil.getRankedPlotCount(player);
+		return STOCMaths.calcTotalStoc(player.getUniqueId().toString()) / PlotUtil.getRankedPlotCount(player);
 	}
 
 }

@@ -5,10 +5,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class STOCManager {
+import me.robnoo02.plotreviewplugin.files.UserDataFile;
+import me.robnoo02.plotreviewplugin.files.UserDataManager;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 
-	public static double calcTotalStoc() {
-		return 0;
+public class STOCMaths {
+
+	public static double calcTotalStoc(String uuid) {
+		UserDataFile file = UserDataManager.getUserDataFile(uuid);
+		double totalStoc = 0;
+		for(String key: file.getCustomYml().getConfigSection("tickets").getKeys(false)) {
+			totalStoc += Double.valueOf(file.getString(Integer.valueOf(key), TicketDataField.STOC));
+		}
+		return totalStoc;
 	}
 
 	public static double calcAverageScore() {
