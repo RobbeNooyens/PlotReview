@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;;
 
 public enum SendMessageUtil {
 
@@ -32,7 +32,7 @@ public enum SendMessageUtil {
 		return retValue;
 	}
 
-	public void sendReview(CommandSender p, String id, String uuid, HashMap<UserDataField, String> data) {
+	public void sendReview(CommandSender p, String id, String uuid, HashMap<TicketDataField, String> data) {
 		for (String s : list) {
 			String send = ColorableText.toColor(reviewPlaceHolders(s, id, uuid, data));
 			if (!send.equalsIgnoreCase("none"))
@@ -47,9 +47,9 @@ public enum SendMessageUtil {
 		return input;
 	}
 
-	private String reviewPlaceHolders(String input, String id, String uuid, HashMap<UserDataField, String> data) {
+	private String reviewPlaceHolders(String input, String id, String uuid, HashMap<TicketDataField, String> data) {
 		input = replace(input, "%review_id%", id);
-		for (UserDataField field : data.keySet())
+		for (TicketDataField field : data.keySet())
 			if (data.get(field) != null)
 				input = replace(input, field.getPlaceHolder(), data.get(field));
 			else if(input.contains(field.getPlaceHolder()))

@@ -12,6 +12,7 @@ import me.robnoo02.plotreviewplugin.commands.SubmitCmd;
 import me.robnoo02.plotreviewplugin.files.ConfigManager;
 import me.robnoo02.plotreviewplugin.files.DataFile;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility;
+import me.robnoo02.plotreviewplugin.score.STOC;
 
 public class Main extends JavaPlugin {
 	
@@ -28,6 +29,7 @@ public class Main extends JavaPlugin {
 		setupUserDataFolder();
 		ConfigManager.setup();
 		DataFile.setup();
+		STOC.setup();
 	}
 	
 	private void setupUserDataFolder() {

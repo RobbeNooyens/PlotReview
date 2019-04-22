@@ -1,5 +1,6 @@
 package me.robnoo02.plotreviewplugin.utils;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.PS;
@@ -59,6 +60,18 @@ public class PlotUtil {
 	 */
 	public static String getPlotId(String plotLocation) {
 		return plotLocation.substring(plotLocation.indexOf(":") + 1, plotLocation.length());
+	}
+	
+	/**
+	 * 
+	 */
+	public static int getRankedPlotCount(OfflinePlayer player) {
+		int count = 0;
+		for(Plot plot: PlotPlayer.wrap(player).getPlots()) {
+			if(!plot.getWorldName().equalsIgnoreCase("freebuild"))
+				count++;
+		}
+		return count;
 	}
 	
 }

@@ -54,14 +54,14 @@ public class UserDataFile {
 	 * @author Robnoo02
 	 *
 	 */
-	public static enum UserDataField {
+	public static enum TicketDataField {
 		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), RESULT("%result%"), STRUCTURE_SCORE(
 				"%structure_score%"), TERRAIN_SCORE("%terrain_score%"), ORGANICS_SCORE(
 						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%");
 
 		private String placeholder;
 
-		private UserDataField(String pH) {
+		private TicketDataField(String pH) {
 			this.placeholder = pH;
 		}
 
@@ -78,6 +78,14 @@ public class UserDataFile {
 			return placeholder;
 		}
 	}
+	
+	public static enum PlayerInfoField {
+		AVARAGE_STOC, TOTAL_STOC, RATING, NUMBER_OF_SUBMISSIONS, LATEST_NAME;
+		
+		public String getPath() {
+			return "player-info." + this.toString().toLowerCase();
+		}
+	}
 
 	/**
 	 * Gets a yml value obtainable with a UserDataField key.
@@ -85,8 +93,12 @@ public class UserDataFile {
 	 * @param field Key for Reviewinfo value
 	 * @return String representing a part of the info from the Review ticket
 	 */
-	public String getString(int id, UserDataField field) {
+	public String getString(int id, TicketDataField field) {
 		return yml.getString(field.getPath(id));
+	}
+	
+	public String getString(PlayerInfoField field) {
+		return yml.getString(field.getPath());
 	}
 
 	/**
@@ -95,8 +107,12 @@ public class UserDataFile {
 	 * @param field Key for Reviewinfo
 	 * @param value Value to be set for the key
 	 */
-	public void setString(int id, UserDataField field, String value) {
+	public void setString(int id, TicketDataField field, String value) {
 		yml.set(field.getPath(id), value);
+	}
+	
+	public void setString(int id, PlayerInfoField field, String value) {
+		yml.set(field.getPath(), value);
 	}
 
 	/**
@@ -111,9 +127,9 @@ public class UserDataFile {
 	 * @param id is ID of Review
 	 * @return HashMap containing all fields with review data
 	 */
-	public HashMap<UserDataField, String> getUserData(int id) {
-		HashMap<UserDataField, String> fields = new HashMap<>();
-		for (UserDataField field : UserDataField.values())
+	public HashMap<TicketDataField, String> getUserData(int id) {
+		HashMap<TicketDataField, String> fields = new HashMap<>();
+		for (TicketDataField field : TicketDataField.values())
 			fields.put(field, getString(id, field));
 		return fields;
 	}

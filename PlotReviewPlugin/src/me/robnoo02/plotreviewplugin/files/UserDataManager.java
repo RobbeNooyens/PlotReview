@@ -3,7 +3,7 @@ package me.robnoo02.plotreviewplugin.files;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 
 /**
  * This singleton stores UserDataFile objects.
@@ -37,9 +37,9 @@ public class UserDataManager {
 	 * @param id Review ticket ID
 	 * @param data HashMap containing UserDataField as a key and its corresponding value as a String
 	 */
-	public static void setUserData(final int id, final HashMap<UserDataField, String> data) {
+	public static void setUserData(final int id, final HashMap<TicketDataField, String> data) {
 		final UserDataFile file = getUserDataFile(id); // Gets UserDataFile object for Player
-		for(UserDataField field: UserDataField.values()) // Loops through its keys
+		for(TicketDataField field: TicketDataField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
 				file.setString(id, field, data.get(field)); // Sets value for each key in yml
 	}
@@ -50,12 +50,12 @@ public class UserDataManager {
 	 * @param id Review ticket ID
 	 * @return HashMap containing all available reviewdata for a Player
 	 */
-	public static  HashMap<UserDataField, String> getUserData(final int ticketId) {
+	public static  HashMap<TicketDataField, String> getUserData(final int ticketId) {
 		UserDataFile file = getUserDataFile(ticketId); // Gets 
 		return file.getUserData(ticketId);
 	}
 	
-	public static String getUserDataField(final int ticketId, UserDataField field) {
+	public static String getUserDataField(final int ticketId, TicketDataField field) {
 		return getUserDataFile(ticketId).getString(ticketId, field);
 	}
 }

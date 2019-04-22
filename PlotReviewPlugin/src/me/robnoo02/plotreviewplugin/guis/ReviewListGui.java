@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
 import me.robnoo02.plotreviewplugin.files.DataFileManager;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.Gui;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
@@ -88,15 +88,15 @@ public class ReviewListGui extends Gui implements SkullTextures {
 		int i = 0;
 		for (Integer id : data.keySet()) {
 			String uuid = data.get(id);
-			HashMap<UserDataField, String> info = UserDataManager.getUserData(id);
+			HashMap<TicketDataField, String> info = UserDataManager.getUserData(id);
 			GuiItem item = new GuiItem.Builder()
-					.name(RankUtil.getRankFormatted(info.get(UserDataField.RANK)) + " &7"
+					.name(RankUtil.getRankFormatted(info.get(TicketDataField.RANK)) + " &7"
 							+ Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName())
-					.lore("&3(" + String.valueOf(id) + ")", "&7World: &f" + info.get(UserDataField.WORLD),
-							"&7Plot: &f[" + info.get(UserDataField.PLOT) + "]")
+					.lore("&3(" + String.valueOf(id) + ")", "&7World: &f" + info.get(TicketDataField.WORLD),
+							"&7Plot: &f[" + info.get(TicketDataField.PLOT) + "]")
 					.leftClick(
 							() -> PlotUtil
-											.getPlot(info.get(UserDataField.WORLD), info.get(UserDataField.PLOT))
+											.getPlot(info.get(TicketDataField.WORLD), info.get(TicketDataField.PLOT))
 											.teleportPlayer(PlotPlayer.wrap(this.getPlayer())))
 					.playerSkull(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName()).build();
 			items[i++] = item;

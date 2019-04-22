@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 
 import me.robnoo02.plotreviewplugin.files.DataFileManager;
 import me.robnoo02.plotreviewplugin.files.UserDataFile;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
+import me.robnoo02.plotreviewplugin.score.STOC;
 import me.robnoo02.plotreviewplugin.guis.HistoryGui;
 import me.robnoo02.plotreviewplugin.guis.ReviewListGui;
-import me.robnoo02.plotreviewplugin.review.ScoreAspect;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
@@ -78,13 +78,13 @@ public class ReviewCmd implements CommandExecutor {
 			int scoreId = Integer.valueOf(args[1]);
 			String userUUID = DataFileManager.getUUID(Integer.valueOf(scoreId));
 			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
-			HashMap<ScoreAspect, String> scores = ScoreAspect.fromString(args[2]);
-			userFile.setString(scoreId, UserDataField.STRUCTURE_SCORE, scores.get(ScoreAspect.STRUCTURE));
-			userFile.setString(scoreId, UserDataField.TERRAIN_SCORE, scores.get(ScoreAspect.TERRAIN));
-			userFile.setString(scoreId, UserDataField.ORGANICS_SCORE, scores.get(ScoreAspect.ORGANICS));
-			userFile.setString(scoreId, UserDataField.COMPOSITION_SCORE, scores.get(ScoreAspect.COMPOSITION));
-			userFile.setString(scoreId, UserDataField.RESULT, String.valueOf(ScoreAspect.calculateOverall(scores)));
-			userFile.setString(scoreId, UserDataField.STAFF, ((Player) sender).getUniqueId().toString());
+			HashMap<STOC, String> scores = STOC.fromString(args[2]);
+			userFile.setString(scoreId, TicketDataField.STRUCTURE_SCORE, scores.get(STOC.STRUCTURE));
+			userFile.setString(scoreId, TicketDataField.TERRAIN_SCORE, scores.get(STOC.TERRAIN));
+			userFile.setString(scoreId, TicketDataField.ORGANICS_SCORE, scores.get(STOC.ORGANICS));
+			userFile.setString(scoreId, TicketDataField.COMPOSITION_SCORE, scores.get(STOC.COMPOSITION));
+			userFile.setString(scoreId, TicketDataField.RESULT, String.valueOf(STOC.calculateOverall(scores)));
+			userFile.setString(scoreId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());
 			DataFileManager.setReviewed(Integer.valueOf(scoreId), true);
 			return true;
 		default:

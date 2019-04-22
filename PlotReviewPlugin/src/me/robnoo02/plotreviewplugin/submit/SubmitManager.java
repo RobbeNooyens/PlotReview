@@ -20,7 +20,7 @@ import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
 import me.robnoo02.plotreviewplugin.files.DataFileManager;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.UserDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 import me.robnoo02.plotreviewplugin.utils.DateFormatterUtil;
@@ -50,11 +50,11 @@ public class SubmitManager implements DebugUtil {
 			return false;
 		int id = ReviewID.generateID(); // Generates unique ID for the Review
 		Plot plot = PlotUtil.getCurrentPlot(p); // Gets the plot the Player is standing on
-		HashMap<UserDataField, String> fields = new HashMap<>(); // HashMap to transfer Review data easily without creating new custom class Objects
-		fields.put(UserDataField.DATE, DateFormatterUtil.formatDate(new Date()));
-		fields.put(UserDataField.PLOT, plot.getId().toString());
-		fields.put(UserDataField.RANK, RankUtil.getRankName(p));
-		fields.put(UserDataField.WORLD, plot.getWorldName());
+		HashMap<TicketDataField, String> fields = new HashMap<>(); // HashMap to transfer Review data easily without creating new custom class Objects
+		fields.put(TicketDataField.DATE, DateFormatterUtil.formatDate(new Date()));
+		fields.put(TicketDataField.PLOT, plot.getId().toString());
+		fields.put(TicketDataField.RANK, RankUtil.getRankName(p));
+		fields.put(TicketDataField.WORLD, plot.getWorldName());
 		UserDataManager.setUserData(id, fields); // Adds review to userdatafile
 		DataFileManager.addReview(id, DataFileManager.toDataFileFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false")); // Saves Review to datafile
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
