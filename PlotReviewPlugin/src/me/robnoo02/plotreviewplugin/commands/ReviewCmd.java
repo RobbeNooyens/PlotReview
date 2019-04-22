@@ -17,9 +17,10 @@ import me.robnoo02.plotreviewplugin.files.UserDataFile;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
-import me.robnoo02.plotreviewplugin.score.STOC;
 import me.robnoo02.plotreviewplugin.guis.HistoryGui;
 import me.robnoo02.plotreviewplugin.guis.ReviewListGui;
+import me.robnoo02.plotreviewplugin.score.STOC;
+import me.robnoo02.plotreviewplugin.score.STOCManager;
 import me.robnoo02.plotreviewplugin.utils.SendMessageUtil;
 
 /**
@@ -47,7 +48,7 @@ public class ReviewCmd implements CommandExecutor {
 			if (!StringUtils.isNumeric(id)) return true; // Prevent Cast exception; exits when not a valid number is given
 			if (DataFileManager.containsId(Integer.valueOf(id))) return true; // Prevent nullpointer exception
 			String uuid = DataFileManager.getUUID(Integer.valueOf(id)); // extracts Player UUID from datafile
-			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid, UserDataManager.getUserData(Integer.valueOf(id)));
+			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid, UserDataManager.getUserDataFile(Integer.valueOf(id)).getUserData(Integer.valueOf(id)));
 			/*
 			 * ^^^^ This is a big problem. SendMessageUtil replaces all placeholders from
 			 * the message with the values of the parameters.
@@ -75,17 +76,17 @@ public class ReviewCmd implements CommandExecutor {
 			if(!(sender instanceof Player))
 				return true;
 			if (args.length < 3) return true;
-			int scoreId = Integer.valueOf(args[1]);
-			String userUUID = DataFileManager.getUUID(Integer.valueOf(scoreId));
+			int ticketId = Integer.valueOf(args[1]);
+			String userUUID = DataFileManager.getUUID(Integer.valueOf(ticketId));
 			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
-			HashMap<STOC, String> scores = STOC.fromString(args[2]);
-			userFile.setString(scoreId, TicketDataField.STRUCTURE_SCORE, scores.get(STOC.STRUCTURE));
-			userFile.setString(scoreId, TicketDataField.TERRAIN_SCORE, scores.get(STOC.TERRAIN));
-			userFile.setString(scoreId, TicketDataField.ORGANICS_SCORE, scores.get(STOC.ORGANICS));
-			userFile.setString(scoreId, TicketDataField.COMPOSITION_SCORE, scores.get(STOC.COMPOSITION));
-			userFile.setString(scoreId, TicketDataField.RESULT, String.valueOf(STOC.calculateOverall(scores)));
-			userFile.setString(scoreId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());
-			DataFileManager.setReviewed(Integer.valueOf(scoreId), true);
+			HashMap<STOC, String> scores = STOC.fromStringStrings(args[2]);
+			userFile.setString(ticketId, TicketDataField.STRUCTURE_SCORE, scores.get(STOC.STRUCTURE));
+			userFile.setString(ticketId, TicketDataField.TERRAIN_SCORE, scores.get(STOC.TERRAIN));
+			userFile.setString(ticketId, TicketDataField.ORGANICS_SCORE, scores.get(STOC.ORGANICS));
+			userFile.setString(ticketId, TicketDataField.COMPOSITION_SCORE, scores.get(STOC.COMPOSITION));
+			userFile.setString(ticketId, TicketDataField.STOC, String.valueOf(STOCManager.calcAverage(scores, ticketId)));
+			userFile.setString(ticketId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());
+			DataFileManager.setReviewed(Integer.valueOf(ticketId), true);
 			return true;
 		default:
 			return true;

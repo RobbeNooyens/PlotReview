@@ -3,7 +3,7 @@ package me.robnoo02.plotreviewplugin.files;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This singleton stores UserDataFile objects.
@@ -21,41 +21,17 @@ public class UserDataManager {
 	 * @return UserDataFile object for given Players UUID
 	 */
 	public static UserDataFile getUserDataFile(final String uuidString) {
+		if(StringUtils.isNumeric(uuidString)) // String is accidently String.valueof(ticketId)
+			return getUserDataFile(String.valueOf(uuidString));
 		final UUID uuid = UUID.fromString(uuidString); // Converts String uuid to UUID object
 		if (!files.containsKey(uuid)) // Checks if UserDataFile object for specific UUID exists.
 			files.put(uuid, UserDataFile.getUserDataFile(uuid)); // Creates new instance if not existed.
 		return files.get(uuid); // Returns UserDataFile for UUID
 	}
 	
-	public static UserDataFile getUserDataFile(final int reviewId) {
-		return getUserDataFile(DataFileManager.getUUID(reviewId));
+	public static UserDataFile getUserDataFile(final int ticketId) {
+		return getUserDataFile(DataFileManager.getUUID(ticketId));
 	}
 	
-	/**
-	 * Writes given data to userdata file.
-	 * @param userUUID UUID of player to save data for
-	 * @param id Review ticket ID
-	 * @param data HashMap containing UserDataField as a key and its corresponding value as a String
-	 */
-	public static void setUserData(final int id, final HashMap<TicketDataField, String> data) {
-		final UserDataFile file = getUserDataFile(id); // Gets UserDataFile object for Player
-		for(TicketDataField field: TicketDataField.values()) // Loops through its keys
-			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
-				file.setString(id, field, data.get(field)); // Sets value for each key in yml
-	}
 	
-	/**
-	 * Reads information from a saved Review in yml file.
-	 * @param uuid UUID of ticketowner
-	 * @param id Review ticket ID
-	 * @return HashMap containing all available reviewdata for a Player
-	 */
-	public static  HashMap<TicketDataField, String> getUserData(final int ticketId) {
-		UserDataFile file = getUserDataFile(ticketId); // Gets 
-		return file.getUserData(ticketId);
-	}
-	
-	public static String getUserDataField(final int ticketId, TicketDataField field) {
-		return getUserDataFile(ticketId).getString(ticketId, field);
-	}
 }

@@ -46,6 +46,14 @@ public class UserDataFile {
 		file.yml.set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
 		return file;
 	}
+	
+	/**
+	 * Gets the ymlFile used by this instance.
+	 * @return YamlConfiguration for userdata configfile
+	 */
+	public CustomYml getCustomYml() {
+		return yml;
+	}
 
 	/**
 	 * Each enum value represents a key in a userdate yml.
@@ -55,9 +63,9 @@ public class UserDataFile {
 	 *
 	 */
 	public static enum TicketDataField {
-		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), RESULT("%result%"), STRUCTURE_SCORE(
+		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), STOC("%stoc%"), STRUCTURE_SCORE(
 				"%structure_score%"), TERRAIN_SCORE("%terrain_score%"), ORGANICS_SCORE(
-						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%");
+						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%"), REVIEWED("%reviewed%");
 
 		private String placeholder;
 
@@ -80,7 +88,7 @@ public class UserDataFile {
 	}
 	
 	public static enum PlayerInfoField {
-		AVARAGE_STOC, TOTAL_STOC, RATING, NUMBER_OF_SUBMISSIONS, LATEST_NAME;
+		AVARAGE_STOC, TOTAL_STOC, RATING, NUMBER_OF_SUBMISSIONS, PENDING_TICKET, LATEST_NAME;
 		
 		public String getPath() {
 			return "player-info." + this.toString().toLowerCase();
@@ -111,16 +119,8 @@ public class UserDataFile {
 		yml.set(field.getPath(id), value);
 	}
 	
-	public void setString(int id, PlayerInfoField field, String value) {
+	public void setString(PlayerInfoField field, String value) {
 		yml.set(field.getPath(), value);
-	}
-
-	/**
-	 * Gets the ymlFile used by this instance.
-	 * @return YamlConfiguration for userdata configfile
-	 */
-	public CustomYml getCustomYml() {
-		return yml;
 	}
 
 	/**
@@ -132,5 +132,30 @@ public class UserDataFile {
 		for (TicketDataField field : TicketDataField.values())
 			fields.put(field, getString(id, field));
 		return fields;
+	}
+	
+	public HashMap<PlayerInfoField, String> getPlayerInfo(){
+		HashMap<PlayerInfoField, String> fields = new HashMap<>();
+		for (PlayerInfoField field : PlayerInfoField.values())
+			fields.put(field, getString(field));
+		return fields;
+	}
+	
+	/**
+	 * Writes given data to userdata file.
+	 * @param userUUID UUID of player to save data for
+	 * @param id Review ticket ID
+	 * @param data HashMap containing UserDataField as a key and its corresponding value as a String
+	 */
+	public void setUserData(final int id, final HashMap<TicketDataField, String> data) {
+		for(TicketDataField field: TicketDataField.values()) // Loops through its keys
+			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
+				setString(id, field, data.get(field)); // Sets value for each key in yml
+	}
+	
+	public void setPlayerInfo(final HashMap<PlayerInfoField, String> data) {
+		for(PlayerInfoField field: PlayerInfoField.values()) // Loops through its keys
+			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
+				setString(field, data.get(field)); // Sets value for each key in yml
 	}
 }

@@ -88,7 +88,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 		int i = 0;
 		for (Integer id : data.keySet()) {
 			String uuid = data.get(id);
-			HashMap<TicketDataField, String> info = UserDataManager.getUserData(id);
+			HashMap<TicketDataField, String> info = UserDataManager.getUserDataFile(id).getUserData(id);
 			GuiItem item = new GuiItem.Builder()
 					.name(RankUtil.getRankFormatted(info.get(TicketDataField.RANK)) + " &7"
 							+ Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName())

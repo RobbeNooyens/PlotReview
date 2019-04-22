@@ -55,7 +55,7 @@ public class SubmitManager implements DebugUtil {
 		fields.put(TicketDataField.PLOT, plot.getId().toString());
 		fields.put(TicketDataField.RANK, RankUtil.getRankName(p));
 		fields.put(TicketDataField.WORLD, plot.getWorldName());
-		UserDataManager.setUserData(id, fields); // Adds review to userdatafile
+		UserDataManager.getUserDataFile(id).setUserData(id, fields); // Adds review to userdatafile
 		DataFileManager.addReview(id, DataFileManager.toDataFileFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false")); // Saves Review to datafile
 		return SendMessageUtil.PLOT_SUBMITTED.send(p, true);
 	}

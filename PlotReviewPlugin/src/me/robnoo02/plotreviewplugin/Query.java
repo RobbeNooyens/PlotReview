@@ -70,7 +70,7 @@ public class Query {
 		/**
 		 * Average score of the individual scores
 		 */
-		RESULT,
+		STOC,
 		/**
 		 * UUID of the staffmember who gave points
 		 */
@@ -101,28 +101,28 @@ public class Query {
 			case REVIEWEE_NAME:
 				return Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.getUUID(ticketId))).getName();
 			case CREATION_DATE:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.DATE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.DATE);
 			case PLOT_ID:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.PLOT);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.PLOT);
 			case RANK:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.RANK);
-			case RESULT:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.RESULT);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.RANK);
+			case STOC:
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STOC);
 			case COMPOSITION_SCORE:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.COMPOSITION_SCORE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case ORGANICS_SCORE:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.ORGANICS_SCORE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.ORGANICS_SCORE);
 			case STRUCTURE_SCORE:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.COMPOSITION_SCORE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case TERRAIN_SCORE:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.COMPOSITION_SCORE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case WORLD:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.COMPOSITION_SCORE);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case STAFF_UUID:
-				return UserDataManager.getUserDataField(ticketId, TicketDataField.STAFF);
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STAFF);
 			case STAFF_NAME:
 				OfflinePlayer staff = Bukkit
-						.getPlayer(UUID.fromString(UserDataManager.getUserDataField(ticketId, TicketDataField.STAFF)));
+						.getPlayer(UUID.fromString(UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STAFF)));
 				return (staff == null) ? "" : staff.getName();
 			default:
 				return null;
@@ -155,23 +155,23 @@ public class Query {
 	 * 
 	 * @return ArrayList containing info for /review info command
 	 */
-	private static HashMap<QueryElement, String> requestInfoCommand(int reviewId) {
+	private static HashMap<QueryElement, String> requestInfoCommand(int ticketId) {
 		HashMap<QueryElement, String> output = new HashMap<>();
 
-		String idValue = DataFileManager.getValue(reviewId);
-		HashMap<TicketDataField, String> userData = UserDataManager.getUserData(reviewId);
+		String idValue = DataFileManager.getValue(ticketId);
+		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
 		OfflinePlayer reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.strip(idValue, "\\+", 0)));
 		OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(userData.get(TicketDataField.STAFF)));
 
-		output.put(QueryElement.TICKET_ID, String.valueOf(reviewId));
+		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
 		output.put(QueryElement.REVIEWED_BY_STAFF, DataFileManager.strip(idValue, "\\+", 2));
 		output.put(QueryElement.REVIEWEE_UUID, DataFileManager.strip(idValue, "\\+", 0));
 		output.put(QueryElement.REVIEWEE_NAME, reviewee.getName());
 		output.put(QueryElement.CREATION_DATE, userData.get(TicketDataField.DATE));
 		output.put(QueryElement.PLOT_ID, userData.get(TicketDataField.PLOT));
 		output.put(QueryElement.RANK, userData.get(TicketDataField.RANK));
-		output.put(QueryElement.RESULT, userData.get(TicketDataField.RESULT));
+		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
 		output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
 		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
 		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
@@ -187,23 +187,23 @@ public class Query {
 	 * 
 	 * @return ArrayList containing info for /review history command
 	 */
-	private static HashMap<QueryElement, String> requestHistoryCommand(int reviewId) {
+	private static HashMap<QueryElement, String> requestHistoryCommand(int ticketId) {
 		HashMap<QueryElement, String> output = new HashMap<>();
 
-		String idValue = DataFileManager.getValue(reviewId);
-		HashMap<TicketDataField, String> userData = UserDataManager.getUserData(reviewId);
+		String idValue = DataFileManager.getValue(ticketId);
+		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
 		OfflinePlayer reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.strip(idValue, "\\+", 0)));
 		OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(userData.get(TicketDataField.STAFF)));
 
-		output.put(QueryElement.TICKET_ID, String.valueOf(reviewId));
+		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
 		output.put(QueryElement.REVIEWED_BY_STAFF, DataFileManager.strip(idValue, "\\+", 2));
 		output.put(QueryElement.REVIEWEE_UUID, DataFileManager.strip(idValue, "\\+", 0));
 		output.put(QueryElement.REVIEWEE_NAME, reviewee.getName());
 		output.put(QueryElement.CREATION_DATE, userData.get(TicketDataField.DATE));
 		output.put(QueryElement.PLOT_ID, userData.get(TicketDataField.PLOT));
 		output.put(QueryElement.RANK, userData.get(TicketDataField.RANK));
-		output.put(QueryElement.RESULT, userData.get(TicketDataField.RESULT));
+		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
 		output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
 		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
 		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
@@ -219,23 +219,23 @@ public class Query {
 	 * 
 	 * @return ArrayList containing info for /review info command
 	 */
-	private static HashMap<QueryElement, String> requestReviewsGui(int reviewId) {
+	private static HashMap<QueryElement, String> requestReviewsGui(int ticketId) {
 		HashMap<QueryElement, String> output = new HashMap<>();
 
-		String idValue = DataFileManager.getValue(reviewId);
-		HashMap<TicketDataField, String> userData = UserDataManager.getUserData(reviewId);
+		String idValue = DataFileManager.getValue(ticketId);
+		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
 		OfflinePlayer reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.strip(idValue, "\\+", 0)));
 		OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(userData.get(TicketDataField.STAFF)));
 
-		output.put(QueryElement.TICKET_ID, String.valueOf(reviewId));
+		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
 		output.put(QueryElement.REVIEWED_BY_STAFF, DataFileManager.strip(idValue, "\\+", 2));
 		output.put(QueryElement.REVIEWEE_UUID, DataFileManager.strip(idValue, "\\+", 0));
 		output.put(QueryElement.REVIEWEE_NAME, reviewee.getName());
 		output.put(QueryElement.CREATION_DATE, userData.get(TicketDataField.DATE));
 		output.put(QueryElement.PLOT_ID, userData.get(TicketDataField.PLOT));
 		output.put(QueryElement.RANK, userData.get(TicketDataField.RANK));
-		output.put(QueryElement.RESULT, userData.get(TicketDataField.RESULT));
+		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
 		output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
 		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
 		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
@@ -251,13 +251,13 @@ public class Query {
 	 * 
 	 * @return ArrayList containing scores
 	 */
-	private static HashMap<QueryElement, String> requestScores(int reviewId) {
+	private static HashMap<QueryElement, String> requestScores(int ticketId) {
 		HashMap<QueryElement, String> output = new HashMap<>();
 
-		HashMap<TicketDataField, String> userData = UserDataManager.getUserData(reviewId);
+		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
-		output.put(QueryElement.TICKET_ID, String.valueOf(reviewId));
-		output.put(QueryElement.RESULT, userData.get(TicketDataField.RESULT));
+		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
+		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
 		output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
 		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
 		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
