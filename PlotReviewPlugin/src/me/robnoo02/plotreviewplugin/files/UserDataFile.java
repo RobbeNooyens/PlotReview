@@ -31,6 +31,15 @@ public class UserDataFile {
 	public CustomYml getCustomYml() {
 		return yml;
 	}
+	
+	public int getReviewedCount() {
+		int count = 0;
+		for(String ticketId: yml.getConfigSection("tickets.").getKeys(false)) {
+			String path = TicketDataField.REVIEWED.getPath(Integer.valueOf(ticketId));
+			count += (Boolean.valueOf(yml.getString(path)) ? 1 : 0);
+		}
+		return count;
+	}
 
 	/**
 	 * Each enum value represents a key in a userdate yml.
@@ -65,7 +74,7 @@ public class UserDataFile {
 	}
 	
 	public static enum PlayerInfoField {
-		AVARAGE_STOC, TOTAL_STOC, RATING, NUMBER_OF_SUBMISSIONS, PENDING_TICKET, LATEST_NAME;
+		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE, NUMBER_OF_SUBMISSIONS, PENDING_TICKET, LATEST_NAME;
 		
 		public String getPath() {
 			return "player-info." + this.toString().toLowerCase();

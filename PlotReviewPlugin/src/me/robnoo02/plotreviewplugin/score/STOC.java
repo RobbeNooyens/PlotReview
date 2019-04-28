@@ -81,9 +81,9 @@ public enum STOC {
 			return weight;
 		}
 
-		public static RankMult fromString(String rank) {
+		public static RankMult fromString(String world) {
 			for (RankMult val : RankMult.values()) {
-				if (val.toString().equalsIgnoreCase(rank)) return val;
+				if (val.toString().equalsIgnoreCase(world)) return val;
 			}
 			return null;
 		}
