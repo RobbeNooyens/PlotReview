@@ -17,6 +17,7 @@ import me.robnoo02.plotreviewplugin.files.UserDataFile;
 import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
+import me.robnoo02.plotreviewplugin.handlers.ScoreHandler;
 import me.robnoo02.plotreviewplugin.guis.HistoryGui;
 import me.robnoo02.plotreviewplugin.guis.ReviewListGui;
 import me.robnoo02.plotreviewplugin.score.STOC;
@@ -36,12 +37,14 @@ public class ReviewCmd implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender)) return true; // Sender should be Player or Console
 		if (!cmd.getName().equalsIgnoreCase("review")) return true; // Command starts with /review
-		if (args.length == 0) return SendMessageUtil.PLUGIN_INFO.send(sender, true); // Subcommand required
+		if (args.length == 0) return SendMessageUtil.CREDITS.send(sender, true); // Subcommand required
 		switch (args[0]) {
 		case "help": // /review help
 			return SendMessageUtil.HELP.send(sender, true); // Shows help page with possible (sub)commands
 		case "list": // /review list
 			return (!(sender instanceof Player)) ? true : ReviewListGui.show((Player) sender, 1, null); // Opens Gui
+		case "credits":
+			return SendMessageUtil.CREDITS.send(sender, true);
 		case "info": // /review info <id>
 			if (args.length < 2) return true;
 			String id = args[1]; // Review ticket ID
@@ -77,6 +80,9 @@ public class ReviewCmd implements CommandExecutor {
 				return true;
 			if (args.length < 3) return true;
 			int ticketId = Integer.valueOf(args[1]);
+			
+			ScoreHandler.handleNewReview(ticketId, args[2], ((Player) sender));
+			
 			String userUUID = DataFileManager.getUUID(Integer.valueOf(ticketId));
 			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
 			HashMap<STOC, String> scores = STOC.fromStringStrings(args[2]);

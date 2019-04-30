@@ -65,7 +65,7 @@ public class SubmitManager implements DebugUtil {
 		if (plot == null)
 			return SendMessageUtil.NOT_ON_PLOT.send(p, false); // Player can't be null
 		if (!plot.getOwners().contains(p.getUniqueId()))
-			return SendMessageUtil.CANT_SUBMIT.send(p, false); // Player should be an owner of the Plot
+			return SendMessageUtil.NOT_PLOTOWNER.send(p, false); // Player should be an owner of the Plot
 		if (!(DataFileManager.idFromPlot(plot) == null))
 			return SendMessageUtil.ALREADY_SUBMITTED.send(p, false); // Plot shouldn't be reviewed yet
 		return true;

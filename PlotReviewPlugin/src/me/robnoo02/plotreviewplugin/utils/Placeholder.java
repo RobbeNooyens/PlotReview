@@ -6,10 +6,7 @@ public enum Placeholder {
 
 	SERVER_NAME("%server%", Main.getInstance().getServer().getName()), 
 	PLUGIN_VERSION("%version%",Main.getInstance().getDescription().getVersion().toString()), 
-	PLUGIN_DEVELOPERS("%devs%", "Robnoo02, Mirass"), 
-	PLUGIN_ARCHITECT("%architect%", "Pie3"),
-	PLUGIN_DESCRIPTION("%description%",Main.getInstance().getDescription().getDescription()),
-	PLUGIN_NAME("%plugin%", Main.getInstance().getName());
+	PLUGIN_DESCRIPTION("%description%",Main.getInstance().getDescription().getDescription());
 
 	private String placeholder;
 	private String placeholderContent;

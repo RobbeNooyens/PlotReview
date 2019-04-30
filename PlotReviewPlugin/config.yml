@@ -9,10 +9,10 @@ score-syntax:
   organics: 3
   composition: 4
 messages:
-  plugin_info:
+  credits:
   - '§8§m-----------------------------------------------------'
   - ' '
-  - '§6%plugin% Info:'
+  - '§6PlotReview Info:'
   - '§3Developers: §bRobnoo02&7, &bMirass'
   - '§3Architect: §bPie3'
   - '§3Version: §b%version%'
@@ -20,6 +20,17 @@ messages:
   - ' '
   - '§8§m-----------------------------------------------------'
   help:
+  - '§8§m-----------------------------------------------------'
+  - ' '
+  - '§6PlotReview Help:'
+  - '§3/submit (confirm/cancel): &bSubmit the plot you're standing on'
+  - '§3/review info <id>: §bGet information about a review'
+  - '§3/review history: §bOpen a Gui with your past reviews'
+  - '§3/review credits: §bDisplay information about this plugin '
+  - '§3/review help: §bShow this page'
+  - ' '
+  - '§8§m-----------------------------------------------------'
+  submit:
   - '&9&m-------------------&9[ &c&lPlot Submit &9]&m--------------------'
   - '&3You are about to submit a plot for review. The plot can be either accepted or denied. If accepted, you will be promoted.'
   - ' '
@@ -30,12 +41,9 @@ messages:
   - '&c[4] &fYou must have made at least 80% of the build.'
   - '&c[5] &fThe build MUST be in the designated plotworld.'
   - '  '
-  - '&3Type &a&n/SUBMIT&r&3 again to submit the plot you are standing on.'
+  - '&3Type &a&n/submit confirm&r&3 to submit the plot you are standing on.'
   - '&9&m-----------------------------------------------------'
-  submit:
-  - '&aType &3/submit confirm &ato confirm your submit.'
-  - '&aType &3/submit cancel &ato cancel.'
-  cant_submit:
+  not_plotowner:
   - "§cYou aren't the owner of this plot!"
   not_on_plot:
   - '§cYou must be on a plot.'
@@ -61,4 +69,19 @@ messages:
   - '&3Staff: &a%staff%'
   no_past_reviews:
   - "&cYou don't have any reviews!"
+  online_reviewed:
+  - '§8§m-----------------------------------------------------'
+  - ' '
+  - '§6Your plot has been reviewed by %staff%!'
+  - '§3Ticket ID: §b%review_id%'
+  - ' '
+  - '§8§m-----------------------------------------------------'
+  offline_reviewed:
+  - '§8§m-----------------------------------------------------'
+  - ' '
+  - '§6Your plot has been reviewed by %staff% while you were offline!'
+  - '§3Ticket ID: §b%review_id%'
+  - '§3Plot: §b%world% %plot%'
+  - ' '
+  - '§8§m-----------------------------------------------------'
   

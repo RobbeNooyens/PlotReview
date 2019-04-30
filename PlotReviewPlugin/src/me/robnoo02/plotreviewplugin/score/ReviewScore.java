@@ -28,7 +28,7 @@ public class ReviewScore {
 		this.ticketId = id;
 		this.staff = staff;
 		
-		this.reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.getUUID(id)));		
+		this.reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.getUUID(id)));
 		
 		HashMap<STOC, Double> scoreMap = STOC.fromStringDoubles(scores);
 		this.s = scoreMap.get(STOC.STRUCTURE);
@@ -55,13 +55,14 @@ public class ReviewScore {
 	 * Dangerous method!
 	 * Calling this method twice can cause problems.
 	 */
-	public void calculate() {
+	public void update() {
 		fillSTOC();
 		fillAvgSTOC();
 		updateTotalSTOC();
 		updateTotAvgSTOC();
 		fillPlotScores();
 		updateRating();
+		pendingTicket = !reviewee.isOnline(); // true if player is offline
 	}
 	
 	private void fillSTOC(){
@@ -162,6 +163,14 @@ public class ReviewScore {
 	
 	public double getAvgPlotScore() {
 		return avgPlotScore;
+	}
+	
+	public boolean hasPendingTicket() {
+		return pendingTicket;
+	}
+	
+	public OfflinePlayer getReviewee() {
+		return reviewee;
 	}
 
 }
