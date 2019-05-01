@@ -13,6 +13,7 @@ messages:
   - '§8§m-----------------------------------------------------'
   - ' '
   - '§6PlotReview Info:'
+  - ' '
   - '§3Developers: §bRobnoo02&7, &bMirass'
   - '§3Architect: §bPie3'
   - '§3Version: §b%version%'
@@ -23,7 +24,7 @@ messages:
   - '§8§m-----------------------------------------------------'
   - ' '
   - '§6PlotReview Help:'
-  - '§3/submit (confirm/cancel): &bSubmit the plot you're standing on'
+  - "§3/submit (confirm/cancel): &bSubmit the plot you're standing on"
   - '§3/review info <id>: §bGet information about a review'
   - '§3/review history: §bOpen a Gui with your past reviews'
   - '§3/review credits: §bDisplay information about this plugin '

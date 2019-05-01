@@ -74,10 +74,18 @@ public class UserDataFile {
 	}
 	
 	public static enum PlayerInfoField {
-		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE, NUMBER_OF_SUBMISSIONS, PENDING_TICKET, LATEST_NAME;
+		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE, NUMBER_OF_SUBMISSIONS, LATEST_NAME;
 		
 		public String getPath() {
 			return "player-info." + this.toString().toLowerCase();
+		}
+	}
+	
+	public static enum OldScoresField {
+		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE;
+		
+		public String getPath() {
+			return "old-score." + this.toString().toLowerCase();
 		}
 	}
 
@@ -94,6 +102,10 @@ public class UserDataFile {
 	public String getString(PlayerInfoField field) {
 		return yml.getString(field.getPath());
 	}
+	
+	public String getString(OldScoresField field) {
+		return yml.getString(field.getPath());
+	}
 
 	/**
 	 * Sets a value for a userdata key.
@@ -106,6 +118,10 @@ public class UserDataFile {
 	}
 	
 	public void setString(PlayerInfoField field, String value) {
+		yml.set(field.getPath(), value);
+	}
+	
+	public void setString(OldScoresField field, String value) {
 		yml.set(field.getPath(), value);
 	}
 
@@ -127,6 +143,13 @@ public class UserDataFile {
 		return fields;
 	}
 	
+	public HashMap<OldScoresField, String> getOldScores(){
+		HashMap<OldScoresField, String> fields = new HashMap<>();
+		for (OldScoresField field : OldScoresField.values())
+			fields.put(field, getString(field));
+		return fields;
+	}
+	
 	/**
 	 * Writes given data to userdata file.
 	 * @param userUUID UUID of player to save data for
@@ -141,6 +164,12 @@ public class UserDataFile {
 	
 	public void setPlayerInfo(final HashMap<PlayerInfoField, String> data) {
 		for(PlayerInfoField field: PlayerInfoField.values()) // Loops through its keys
+			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
+				setString(field, data.get(field)); // Sets value for each key in yml
+	}
+	
+	public void setOldScores(final HashMap<OldScoresField, String> data) {
+		for(OldScoresField field: OldScoresField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
 				setString(field, data.get(field)); // Sets value for each key in yml
 	}

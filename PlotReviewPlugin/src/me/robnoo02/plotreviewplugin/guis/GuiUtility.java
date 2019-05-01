@@ -121,6 +121,8 @@ public class GuiUtility implements Listener {
 		}
 		
 		public void fillSlots(int start, int end, int page, GuiItem... items) {
+			if(items == null)
+				return;
 			int perPage = end - start;
 			this.totalPages = items.length / perPage;
 			if (items.length % perPage > 0)

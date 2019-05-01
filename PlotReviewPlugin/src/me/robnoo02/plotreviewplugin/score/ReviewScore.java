@@ -16,13 +16,15 @@ public class ReviewScore {
 	// Final fields
 	// Some files should are unnecessary and should be removed later on
 	private final int ticketId;
-	private final String world, plot, rank, date;
+	private final String world/*, plot, rank, date*/;
 	private final OfflinePlayer staff, reviewee;
 	private final double s, t, o, c; // Structure, Terrain, Organics, Composition
+	private final double oTotAvgStoc, oTotStoc;
+	private final int oRating;
 	
 	private double stoc, avgStoc, totAvgStoc, totStoc, plotScore, totalPlotScore, avgPlotScore;
 	private int rating, numberOfSubmissions;
-	private boolean canRankup, pendingTicket, reviewed = true;
+	private boolean canRankup, reviewed = true;
 	
 	public ReviewScore(int id, OfflinePlayer staff, String scores) {
 		this.ticketId = id;
@@ -37,16 +39,18 @@ public class ReviewScore {
 		this.c = scoreMap.get(STOC.COMPOSITION);
 		
 		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(id).getUserData(id);
-		this.rank = userData.get(TicketDataField.RANK);
 		this.world = userData.get(TicketDataField.WORLD);
+		/*this.rank = userData.get(TicketDataField.RANK);
 		this.plot = userData.get(TicketDataField.PLOT);
-		this.date = userData.get(TicketDataField.DATE);
+		this.date = userData.get(TicketDataField.DATE);*/
 		
 		HashMap<PlayerInfoField, String> playerInfo = UserDataManager.getUserDataFile(id).getPlayerInfo();
-		this.pendingTicket = Boolean.valueOf(playerInfo.get(PlayerInfoField.PENDING_TICKET));
-		this.totAvgStoc = Double.valueOf(playerInfo.get(PlayerInfoField.AVARAGE_STOC));
-		this.totStoc = Double.valueOf(playerInfo.get(PlayerInfoField.TOTAL_STOC));
-		this.rating = Integer.valueOf(playerInfo.get(PlayerInfoField.RATING));
+		this.oTotAvgStoc = Double.valueOf(playerInfo.get(PlayerInfoField.AVARAGE_STOC));
+		this.oTotStoc = Double.valueOf(playerInfo.get(PlayerInfoField.TOTAL_STOC));
+		this.oRating = Integer.valueOf(playerInfo.get(PlayerInfoField.RATING));
+		this.totAvgStoc = oTotAvgStoc;
+		this.totStoc = oTotStoc;
+		this.rating = oRating;
 		this.numberOfSubmissions = Integer.valueOf(playerInfo.get(PlayerInfoField.NUMBER_OF_SUBMISSIONS)) + 1; // +1 for this submission
 		this.totalPlotScore = Double.valueOf(playerInfo.get(PlayerInfoField.TOTAL_PLOT_SCORE));
 	}
@@ -62,7 +66,6 @@ public class ReviewScore {
 		updateTotAvgSTOC();
 		fillPlotScores();
 		updateRating();
-		pendingTicket = !reviewee.isOnline(); // true if player is offline
 	}
 	
 	private void fillSTOC(){
@@ -105,6 +108,10 @@ public class ReviewScore {
 	 * Getters
 	 ************/
 	
+	public int getId() {
+		return ticketId;
+	}
+	
 	public OfflinePlayer getStaff() {
 		return staff;
 	}
@@ -145,6 +152,18 @@ public class ReviewScore {
 		return rating;
 	}
 	
+	public double getOldTotAvgStoc() {
+		return oTotAvgStoc;
+	}
+	
+	public double getOldTotStoc() {
+		return oTotStoc;
+	}
+	
+	public int getOldRating() {
+		return oRating;
+	}
+	
 	public boolean canRankup() {
 		return canRankup;
 	}
@@ -165,12 +184,12 @@ public class ReviewScore {
 		return avgPlotScore;
 	}
 	
-	public boolean hasPendingTicket() {
-		return pendingTicket;
-	}
-	
 	public OfflinePlayer getReviewee() {
 		return reviewee;
+	}
+	
+	public int getSubmissions() {
+		return numberOfSubmissions;
 	}
 
 }

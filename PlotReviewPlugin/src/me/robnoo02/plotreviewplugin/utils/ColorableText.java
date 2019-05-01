@@ -6,12 +6,20 @@ public class ColorableText {
 
 	// Gives color to string
 	static String toColor(String input) {
-		return (ChatColor.translateAlternateColorCodes('&', input));
+		try {
+			return (ChatColor.translateAlternateColorCodes('&', input));
+		} catch (Exception e) {
+			return input;
+		}
 	}
 
 	// Removes color from string
 	static String removeColor(String input) {
-		return (ChatColor.stripColor(input));
+		try {
+			return (ChatColor.stripColor(input));
+		} catch (Exception e) {
+			return input;
+		}
 	}
 
 }

@@ -38,14 +38,14 @@ public class SubmitCmd implements CommandExecutor {
 			else
 				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true);
 			SubmitManager.removeSubmitQueue(p);
+			return true;
 		} else {
-			if (PermissionUtil.SUBMIT_PLOT.hasAndWarn((Player) sender))
+			if (!PermissionUtil.SUBMIT_PLOT.hasAndWarn((Player) sender))
 				return true;
 			if (SubmitManager.possibleToSubmit(p))
 				SubmitManager.addSubmitQueue(p);
-			SendMessageUtil.SUBMIT.send(sender, true);
+			return SendMessageUtil.SUBMIT.send(sender, true);
 		}
-		return true;
 	}
 
 }
