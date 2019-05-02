@@ -3,6 +3,11 @@ package me.robnoo02.plotreviewplugin.files;
 import java.util.HashMap;
 import java.util.UUID;
 
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.OldScoresField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.PlayerInfoField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.UserDataField;
+
 /**
  * Each instance represents a userdata yml file.
  * A UserDataFile contains a Player uuid and a refernce to its yml in the userdata folder.
@@ -22,6 +27,8 @@ public class UserDataFile {
 	public UserDataFile(final UUID uuid) {
 		this.uuid = uuid.toString();
 		this.yml = CustomYml.createFileInFolder("userdata", this.uuid, true);
+		this.yml.setup();
+		fillMissingInfo();
 	}
 	
 	/**
@@ -40,90 +47,18 @@ public class UserDataFile {
 		}
 		return count;
 	}
-
-	/**
-	 * Each enum value represents a key in a userdate yml.
-	 * Placeholder is used to replace the yml's value with.
-	 * @param pH Placeholder
-	 * @author Robnoo02
-	 *
-	 */
-	public static enum TicketDataField {
-		RANK("%rank%"), DATE("%date%"), WORLD("%world%"), PLOT("%plot%"), STOC("%stoc%"), AVERAGE_STOC("%average_stoc%"), STRUCTURE_SCORE(
-				"%structure_score%"), TERRAIN_SCORE("%terrain_score%"), ORGANICS_SCORE(
-						"%organics_score%"), COMPOSITION_SCORE("%composition_score%"), STAFF("%staff%"), REVIEWED("%reviewed%");
-
-		private String placeholder;
-
-		private TicketDataField(String pH) {
-			this.placeholder = pH;
+	
+	public void fillMissingInfo() {
+		for(PlayerInfoField field: PlayerInfoField.values()){
+			if(!yml.containsKey(field.getPath()))
+				setString(0, field, field.getDefaultValue());
 		}
-
-		/**
-		 * Returns path to get a value in a userdata yml.
-		 * @param id Review ticket ID
-		 * @return Path for yml
-		 */
-		public String getPath(int id) {
-			return "tickets." + String.valueOf(id) + "." + this.toString().toLowerCase();
-		}
-
-		public String getPlaceHolder() {
-			return placeholder;
+		for(OldScoresField field: OldScoresField.values()){
+			if(!yml.containsKey(field.getPath()))
+				setString(0, field, field.getDefaultValue());
 		}
 	}
 	
-	public static enum PlayerInfoField {
-		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE, NUMBER_OF_SUBMISSIONS, LATEST_NAME;
-		
-		public String getPath() {
-			return "player-info." + this.toString().toLowerCase();
-		}
-	}
-	
-	public static enum OldScoresField {
-		AVARAGE_STOC, TOTAL_STOC, RATING, TOTAL_PLOT_SCORE;
-		
-		public String getPath() {
-			return "old-score." + this.toString().toLowerCase();
-		}
-	}
-
-	/**
-	 * Gets a yml value obtainable with a UserDataField key.
-	 * @param id Review ticket ID
-	 * @param field Key for Reviewinfo value
-	 * @return String representing a part of the info from the Review ticket
-	 */
-	public String getString(int id, TicketDataField field) {
-		return yml.getString(field.getPath(id));
-	}
-	
-	public String getString(PlayerInfoField field) {
-		return yml.getString(field.getPath());
-	}
-	
-	public String getString(OldScoresField field) {
-		return yml.getString(field.getPath());
-	}
-
-	/**
-	 * Sets a value for a userdata key.
-	 * @param id Review ticket ID
-	 * @param field Key for Reviewinfo
-	 * @param value Value to be set for the key
-	 */
-	public void setString(int id, TicketDataField field, String value) {
-		yml.set(field.getPath(id), value);
-	}
-	
-	public void setString(PlayerInfoField field, String value) {
-		yml.set(field.getPath(), value);
-	}
-	
-	public void setString(OldScoresField field, String value) {
-		yml.set(field.getPath(), value);
-	}
 
 	/**
 	 * @param id is ID of Review
@@ -139,15 +74,35 @@ public class UserDataFile {
 	public HashMap<PlayerInfoField, String> getPlayerInfo(){
 		HashMap<PlayerInfoField, String> fields = new HashMap<>();
 		for (PlayerInfoField field : PlayerInfoField.values())
-			fields.put(field, getString(field));
+			fields.put(field, getString(0, field));
 		return fields;
 	}
 	
 	public HashMap<OldScoresField, String> getOldScores(){
 		HashMap<OldScoresField, String> fields = new HashMap<>();
 		for (OldScoresField field : OldScoresField.values())
-			fields.put(field, getString(field));
+			fields.put(field, getString(0, field));
 		return fields;
+	}
+	
+	/**
+	 * Gets a yml value obtainable with a UserDataField key.
+	 * @param id Review ticket ID
+	 * @param field Key for Reviewinfo value
+	 * @return String representing a part of the info from the Review ticket
+	 */
+	public String getString(int id, UserDataField field) {
+		return yml.getString(field.getPath(id));
+	}
+
+	/**
+	 * Sets a value for a userdata key.
+	 * @param id Review ticket ID
+	 * @param field Key for Reviewinfo
+	 * @param value Value to be set for the key
+	 */
+	public void setString(int id, UserDataField field, String value) {
+		yml.set(field.getPath(id), value);
 	}
 	
 	/**
@@ -165,12 +120,12 @@ public class UserDataFile {
 	public void setPlayerInfo(final HashMap<PlayerInfoField, String> data) {
 		for(PlayerInfoField field: PlayerInfoField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
-				setString(field, data.get(field)); // Sets value for each key in yml
+				setString(0, field, data.get(field)); // Sets value for each key in yml
 	}
 	
 	public void setOldScores(final HashMap<OldScoresField, String> data) {
 		for(OldScoresField field: OldScoresField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
-				setString(field, data.get(field)); // Sets value for each key in yml
+				setString(0, field, data.get(field)); // Sets value for each key in yml
 	}
 }

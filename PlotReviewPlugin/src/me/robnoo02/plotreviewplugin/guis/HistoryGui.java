@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.Gui;
 import me.robnoo02.plotreviewplugin.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;

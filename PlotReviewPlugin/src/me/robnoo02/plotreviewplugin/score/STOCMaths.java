@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import me.robnoo02.plotreviewplugin.files.UserDataFile;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
 
 public class STOCMaths {
 

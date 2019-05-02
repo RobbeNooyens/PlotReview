@@ -7,7 +7,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.intellectualcrafters.plot.object.Plot;
 
-import me.robnoo02.plotreviewplugin.Query.QueryElement;
 import me.robnoo02.plotreviewplugin.review.ReviewID;
 import me.robnoo02.plotreviewplugin.utils.PlotUtil;
 
@@ -28,7 +27,7 @@ public class DataFileManager {
 		for (String key : keys) { // Loops through keys to determine which Reviews aren't reviewed yet
 			String value = getValue(Integer.valueOf(key));
 			if (value.contains("false"))
-				uuidOutput.put(Integer.valueOf(key), QueryElement.REVIEWEE_UUID.request(Integer.valueOf(key))); // Adds if not reviewed
+				uuidOutput.put(Integer.valueOf(key), getUUID(Integer.valueOf(key))); // Adds if not reviewed
 		}
 		return uuidOutput;
 	}

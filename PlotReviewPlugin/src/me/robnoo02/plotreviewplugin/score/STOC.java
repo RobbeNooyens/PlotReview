@@ -3,7 +3,7 @@ package me.robnoo02.plotreviewplugin.score;
 import java.util.HashMap;
 
 import me.robnoo02.plotreviewplugin.files.ConfigManager;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 
 public enum STOC {
@@ -41,10 +41,10 @@ public enum STOC {
 		if (info.length < values().length) return null;
 		HashMap<STOC, Double> map = new HashMap<>();
 		try {
-			map.put(STOC.STRUCTURE, Double.valueOf(info[STOC.STRUCTURE.getIndex()]));
-			map.put(STOC.ORGANICS, Double.valueOf(info[STOC.ORGANICS.getIndex()]));
-			map.put(STOC.TERRAIN, Double.valueOf(info[STOC.TERRAIN.getIndex()]));
-			map.put(STOC.COMPOSITION, Double.valueOf(info[STOC.COMPOSITION.getIndex()]));
+			map.put(STOC.STRUCTURE, Double.valueOf(info[STOC.STRUCTURE.getIndex() - 1]));
+			map.put(STOC.ORGANICS, Double.valueOf(info[STOC.ORGANICS.getIndex() - 1]));
+			map.put(STOC.TERRAIN, Double.valueOf(info[STOC.TERRAIN.getIndex() - 1]));
+			map.put(STOC.COMPOSITION, Double.valueOf(info[STOC.COMPOSITION.getIndex() - 1]));
 		} catch (ClassCastException exception) {
 			// Staff entered wrong score format
 			return null;

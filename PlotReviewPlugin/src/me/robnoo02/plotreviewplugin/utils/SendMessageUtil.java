@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;;
 
 public enum SendMessageUtil {
 

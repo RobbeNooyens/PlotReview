@@ -3,9 +3,9 @@ package me.robnoo02.plotreviewplugin.handlers;
 import org.bukkit.OfflinePlayer;
 
 import me.robnoo02.plotreviewplugin.files.UserDataFile;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.OldScoresField;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.PlayerInfoField;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.OldScoresField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.PlayerInfoField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 import me.robnoo02.plotreviewplugin.score.ReviewScore;
 
@@ -24,20 +24,21 @@ public class ScoreHandler {
 		file.setString(id, TicketDataField.COMPOSITION_SCORE, String.valueOf(score.getCompositionScore()));
 		file.setString(id, TicketDataField.STOC, String.valueOf(score.getStoc()));
 		file.setString(id, TicketDataField.AVERAGE_STOC, String.valueOf(score.getAvgStoc()));
-		file.setString(PlayerInfoField.TOTAL_STOC, String.valueOf(score.getTotStoc()));
-		file.setString(PlayerInfoField.AVARAGE_STOC, String.valueOf(score.getTotAvgStoc()));
-		file.setString(PlayerInfoField.RATING, String.valueOf(score.getRating()));
-		file.setString(PlayerInfoField.NUMBER_OF_SUBMISSIONS, String.valueOf(score.getSubmissions()));
-		file.setString(PlayerInfoField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
-		file.setString(PlayerInfoField.LATEST_NAME, String.valueOf(score.getReviewee().getName()));
+		
+		file.setString(id, PlayerInfoField.TOTAL_STOC, String.valueOf(score.getTotStoc()));
+		file.setString(id, PlayerInfoField.AVARAGE_STOC, String.valueOf(score.getTotAvgStoc()));
+		file.setString(id, PlayerInfoField.RATING, String.valueOf(score.getRating()));
+		file.setString(id, PlayerInfoField.NUMBER_OF_SUBMISSIONS, String.valueOf(score.getSubmissions()));
+		file.setString(id, PlayerInfoField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
+		file.setString(id, PlayerInfoField.LATEST_NAME, String.valueOf(score.getReviewee().getName()));
 
 		if (score.getReviewee().isOnline()) {
 
 		} else {
-			file.setString(OldScoresField.AVARAGE_STOC, String.valueOf(score.getTotAvgStoc()));
-			file.setString(OldScoresField.TOTAL_STOC, String.valueOf(score.getAvgStoc()));
-			file.setString(OldScoresField.RATING, String.valueOf(score.getRating()));
-			file.setString(OldScoresField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
+			file.setString(id, OldScoresField.AVARAGE_STOC, String.valueOf(score.getTotAvgStoc()));
+			file.setString(id, OldScoresField.TOTAL_STOC, String.valueOf(score.getAvgStoc()));
+			file.setString(id, OldScoresField.RATING, String.valueOf(score.getRating()));
+			file.setString(id, OldScoresField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
 		}
 
 		if (score.canRankup()) {

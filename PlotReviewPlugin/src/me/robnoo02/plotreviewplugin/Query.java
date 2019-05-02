@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import me.robnoo02.plotreviewplugin.files.DataFileManager;
-import me.robnoo02.plotreviewplugin.files.UserDataFile.TicketDataField;
+import me.robnoo02.plotreviewplugin.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreviewplugin.files.UserDataManager;
 
 public class Query {

@@ -37,7 +37,6 @@ public class UserDataManager {
 	
 	private static UserDataFile getUserDataFile(UUID uuid) {
 		UserDataFile file = new UserDataFile(uuid);
-		file.getCustomYml().setup();
 		file.getCustomYml().set("latest-name", Bukkit.getOfflinePlayer(uuid).getName());
 		return file;
 	}

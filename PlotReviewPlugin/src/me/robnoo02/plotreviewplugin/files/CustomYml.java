@@ -121,6 +121,10 @@ public class CustomYml {
 		return config.getConfigurationSection(path).getKeys(false).contains(key);
 	}
 	
+	public boolean containsKey(String path) {
+		return config.contains(path);
+	}
+	
 	public ConfigurationSection getConfigSection(String path) {
 		return config.getConfigurationSection(path);
 	}
