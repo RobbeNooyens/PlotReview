@@ -12,12 +12,13 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import me.robnoo02.plotreview.Query.QueryGroup;
+import me.robnoo02.plotreview.files.ConfigManager;
 import me.robnoo02.plotreview.files.DataFileManager;
 import me.robnoo02.plotreview.files.UserDataFile;
 import me.robnoo02.plotreview.files.UserDataManager;
+import me.robnoo02.plotreview.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreview.guis.HistoryGui;
 import me.robnoo02.plotreview.guis.ReviewListGui;
-import me.robnoo02.plotreview.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreview.handlers.ScoreHandler;
 import me.robnoo02.plotreview.utils.SendMessageUtil;
 
@@ -89,8 +90,10 @@ public class ReviewCmd implements CommandExecutor {
 			userFile.setString(ticketId, TicketDataField.STOC, String.valueOf(STOCMaths.calcAverage(scores, ticketId)));
 			userFile.setString(ticketId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());*/
 			DataFileManager.setReviewed(Integer.valueOf(ticketId), true);
-			return true;
+			return SendMessageUtil.STAFF_REVIEWED_PLOT .send(sender, true);
 		case "reload":
+			ConfigManager.reload();
+			SendMessageUtil.CONFIG_RELOADED.send(sender);
 			return true;
 		default:
 			return true;

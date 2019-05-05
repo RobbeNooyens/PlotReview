@@ -20,11 +20,12 @@ public class ReviewScore {
 	private final OfflinePlayer staff, reviewee;
 	private final double s, t, o, c; // Structure, Terrain, Organics, Composition
 	private final double oTotAvgStoc, oTotStoc;
+	private static final double PASS_THRESHOLD = 4.0;
 	private final int oRating;
 	
 	private double stoc, avgStoc, totAvgStoc, totStoc, plotScore, totalPlotScore, avgPlotScore;
 	private int rating, numberOfSubmissions;
-	private boolean canRankup, reviewed = true;
+	private boolean canRankup, passes, reviewed = true;
 	
 	public ReviewScore(int id, OfflinePlayer staff, String scores) {
 		this.ticketId = id;
@@ -74,6 +75,7 @@ public class ReviewScore {
 	
 	private void fillAvgSTOC() {
 		this.avgStoc = stoc / 4;
+		this.passes = avgStoc >= PASS_THRESHOLD;
 		/*int divider = 0;
 		divider += (s==0 ? 0 : 1);
 		divider += (t==0 ? 0 : 1);
@@ -191,6 +193,10 @@ public class ReviewScore {
 	
 	public int getSubmissions() {
 		return numberOfSubmissions;
+	}
+	
+	public boolean passes() {
+		return passes;
 	}
 
 }

@@ -26,6 +26,11 @@ public final class ConfigManager {
 		}
 	}
 	
+	public static void reload() {
+		plugin.reloadConfig();
+		setEnumMessages();
+	}
+	
 	/**
 	 * Returns string from Yml
 	 * @param key is the path in the yml

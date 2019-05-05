@@ -85,6 +85,10 @@ public class Query {
 		 */
 		AVG_STOC,
 		/**
+		 * Whether or not the build passes
+		 */
+		PASSES,
+		/**
 		 * Rating of a player's builds
 		 */
 		RATING,
@@ -104,7 +108,7 @@ public class Query {
 		 * Name of the plugin
 		 */
 		PLUGIN_NAME;
-		
+
 		/**
 		 * Reads one specific element of a ticket. I've chosen to call the
 		 * getUserDataField method every single time instead of collecting a HashMap
@@ -115,7 +119,7 @@ public class Query {
 		 *            is the id number of the ticket
 		 */
 		public String request(int ticketId) {
-			if (DataFileManager.containsId(ticketId)) return null;
+			if (!DataFileManager.containsId(ticketId)) return null;
 			switch (this) {
 			case TICKET_ID:
 				return String.valueOf(ticketId);
@@ -145,9 +149,11 @@ public class Query {
 				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case STAFF_UUID:
 				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STAFF);
+			case PASSES:
+				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.PASSES);
 			case STAFF_NAME:
-				OfflinePlayer staff = Bukkit
-						.getPlayer(UUID.fromString(UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STAFF)));
+				String uuid = UserDataManager.getUserDataFile(ticketId).getString(ticketId, TicketDataField.STAFF);
+				OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 				return (staff == null) ? "" : staff.getName();
 			case RATING:
 				return UserDataManager.getUserDataFile(ticketId).getString(ticketId, PlayerInfoField.RATING);
@@ -163,7 +169,7 @@ public class Query {
 				return null;
 			}
 		}
-		
+
 		public String getPlaceHolder() {
 			return "%" + this.toString().toLowerCase() + "%";
 		}
@@ -171,7 +177,7 @@ public class Query {
 	}
 
 	public static enum QueryGroup {
-		INFO, HISTORY, GUI, SCORES, PLUGIN;
+		INFO, HISTORY, GUI, SCORES, PLUGIN, PLOT_REVIEWED;
 
 		public HashMap<QueryElement, String> get(int ticketId) {
 			switch (this) {
@@ -185,6 +191,8 @@ public class Query {
 				return requestScores(ticketId);
 			case PLUGIN:
 				return requestPluginInfo(ticketId);
+			case PLOT_REVIEWED:
+				return requestReviewedClick(ticketId);
 			default:
 				return null;
 			}
@@ -197,7 +205,7 @@ public class Query {
 	 * @return ArrayList containing info for /review info command
 	 */
 	private static HashMap<QueryElement, String> requestInfoCommand(int ticketId) {
-		
+
 		HashMap<QueryElement, String> output = new HashMap<>();
 		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
@@ -217,10 +225,10 @@ public class Query {
 		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
 		output.put(QueryElement.AVG_STOC, userData.get(TicketDataField.AVERAGE_STOC));
 		output.put(QueryElement.STAFF_NAME, (staff == null) ? null : staff.getName());
-		
+
 		return output;
 	}
-	
+
 	/**
 	 * Contains: TicketID, Reviewee's name, Rank, Date, World, Plot, Score
 	 * 
@@ -252,7 +260,7 @@ public class Query {
 		if (staff != null) output.put(QueryElement.STAFF_UUID, staff.getName());
 		return output;
 	}
-	
+
 	/**
 	 * Contains: TicketID, Reviewee's name, Rank, Date, World, Plot, Score
 	 * 
@@ -303,13 +311,20 @@ public class Query {
 		output.put(QueryElement.TERRAIN_SCORE, userData.get(TicketDataField.TERRAIN_SCORE));
 		return output;
 	}
-	
-	private static HashMap<QueryElement, String> requestPluginInfo(int ticketId){
+
+	private static HashMap<QueryElement, String> requestPluginInfo(int ticketId) {
 		HashMap<QueryElement, String> output = new HashMap<>();
 		output.put(QueryElement.PLUGIN_DESCRIPTION, QueryElement.PLUGIN_DESCRIPTION.request(ticketId));
 		output.put(QueryElement.PLUGIN_DEVELOPERS, QueryElement.PLUGIN_DEVELOPERS.request(ticketId));
 		output.put(QueryElement.PLUGIN_NAME, QueryElement.PLUGIN_NAME.request(ticketId));
 		output.put(QueryElement.PLUGIN_VERSION, QueryElement.PLUGIN_VERSION.request(ticketId));
+		return output;
+	}
+
+	private static HashMap<QueryElement, String> requestReviewedClick(int ticketId) {
+		HashMap<QueryElement, String> output = new HashMap<>();
+		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
+		output.put(QueryElement.STAFF_NAME, QueryElement.STAFF_NAME.request(ticketId));
 		return output;
 	}
 
