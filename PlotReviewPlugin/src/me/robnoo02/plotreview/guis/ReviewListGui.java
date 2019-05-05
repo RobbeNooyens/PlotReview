@@ -30,8 +30,12 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	private ReviewListGui(Player p, int page, Gui previousGui) {
 		super(p, "§4§lReview History", 54, page);
 		this.unreviewed = DataFileManager.getUnreviewedReferences();
-		this.UNREVIEWED_SIZE = unreviewed.size();
-		this.fillSlots(START_FILL, END_FILL, page, getReviewHeads());
+		if (unreviewed != null) {
+			this.UNREVIEWED_SIZE = unreviewed.size();
+			this.fillSlots(START_FILL, END_FILL, page, getReviewHeads());
+		} else {
+			this.UNREVIEWED_SIZE = 0; 
+		}
 		this.setGuiLink(previousGui);
 		this.setItem(48, getPreviousPage());
 		this.setItem(49, getExit());
@@ -85,8 +89,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	 */
 	private GuiItem[] getReviewHeads() {
 		HashMap<Integer, String> data = DataFileManager.getUnreviewedReferences();
-		if(data == null)
-			return new GuiItem[1];
+		if (data == null) return new GuiItem[1];
 		GuiItem[] items = new GuiItem[data.size()];
 		int i = 0;
 		for (Integer id : data.keySet()) {

@@ -76,12 +76,25 @@ public class DebugCmd implements CommandExecutor {
 				return true;
 			}
 			UserDataFile userFile = UserDataManager.getUserDataFile(uuid);
-			sender.sendMessage("§3latest-name§8: §7" + userFile.getCustomYml().getYml().getString("latest-name"));
 			sender.sendMessage("§3tickets§8:");
 			for(String key: userFile.getCustomYml().getYml().getConfigurationSection("tickets").getKeys(false)) {
 				sender.sendMessage("  §3'" + key + "'§8:");
 				for(String subKey: userFile.getCustomYml().getYml().getConfigurationSection("tickets." + key).getKeys(false)) {
 					sender.sendMessage("    §3" + subKey + "§8: §7" + userFile.getCustomYml().getYml().getString("tickets." + key + "." + subKey));
+				}
+			}
+			sender.sendMessage("§3player-info§8:");
+			for(String key: userFile.getCustomYml().getYml().getConfigurationSection("player-info").getKeys(false)) {
+				sender.sendMessage("  §3'" + key + "'§8:");
+				for(String subKey: userFile.getCustomYml().getYml().getConfigurationSection("tickets." + key).getKeys(false)) {
+					sender.sendMessage("    §3" + subKey + "§8: §7" + userFile.getCustomYml().getYml().getString("player-info." + key + "." + subKey));
+				}
+			}
+			sender.sendMessage("§3old-info§8:");
+			for(String key: userFile.getCustomYml().getYml().getConfigurationSection("old-info").getKeys(false)) {
+				sender.sendMessage("  §3'" + key + "'§8:");
+				for(String subKey: userFile.getCustomYml().getYml().getConfigurationSection("tickets." + key).getKeys(false)) {
+					sender.sendMessage("    §3" + subKey + "§8: §7" + userFile.getCustomYml().getYml().getString("old-info." + key + "." + subKey));
 				}
 			}
 			break;

@@ -12,11 +12,11 @@ messages:
   credits:
   - '§8§m-----------------------------------------------------'
   - ' '
-  - '§6PlotReview Info:'
+  - '§6%plugin_name% Info:'
   - ' '
-  - '§3Developers: §bRobnoo02&7, &bMirass'
-  - '§3Version: §b%version%'
-  - '§3Description: §b%description%'
+  - '§3Developers: §b%plugin_developers%'
+  - '§3Version: §b%plugin_version%'
+  - '§3Description: §b%plugin_description%'
   - ' '
   - '§8§m-----------------------------------------------------'
   help:
@@ -58,15 +58,15 @@ messages:
   confirm_or_cancel:
   - "&cPlease choose 'confirm' or 'cancel' as parameter."
   review_info:
-  - '&3ID: &a%review_id%'
-  - '&3Reviewee: &a%reviewee%'
+  - '&3ID: &a%ticket_id%'
+  - '&3Reviewee: &a%reviewee_name%'
   - '&3Rank: &a%rank%'
   - '&3Date: &a%date%'
   - '&3World: &a%world%'
-  - '&3Plot: &a%plot%'
-  - '&3Result: &a%result%'
-  - '&3Score: &a%score%'
-  - '&3Staff: &a%staff%'
+  - '&3Plot: &a%plot_id%'
+  - '&3Stoc-score: &a%stoc%'
+  - '&3Average stoc: &a%avg_stoc%'
+  - '&3Staff: &a%staff_name%'
   no_past_reviews:
   - "&cYou don't have any reviews!"
   online_reviewed:

@@ -51,7 +51,7 @@ public class ReviewScore {
 		this.totAvgStoc = oTotAvgStoc;
 		this.totStoc = oTotStoc;
 		this.rating = oRating;
-		this.numberOfSubmissions = Integer.valueOf(playerInfo.get(PlayerInfoField.NUMBER_OF_SUBMISSIONS)) + 1; // +1 for this submission
+		this.numberOfSubmissions = Integer.valueOf(playerInfo.get(PlayerInfoField.ACCEPTED_SUBMISSIONS)) + 1; // +1 for this submission
 		this.totalPlotScore = Double.valueOf(playerInfo.get(PlayerInfoField.TOTAL_PLOT_SCORE));
 	}
 	
@@ -91,7 +91,7 @@ public class ReviewScore {
 	}
 	
 	private void updateTotAvgSTOC() {
-		totAvgStoc = totStoc / numberOfSubmissions;
+		totAvgStoc = ((((numberOfSubmissions-1)*oTotAvgStoc) + avgStoc) / numberOfSubmissions);
 	}
 	
 	private void fillPlotScores() {

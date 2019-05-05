@@ -21,6 +21,8 @@ public class DataFileManager {
 	 * @return HashMap containing the ticketId as key and a String value from a datafile.
 	 */
 	public static HashMap<Integer, String> getUnreviewedReferences() {
+		if(DataFile.getCustomYml().getYml().getConfigurationSection(REVIEWPATH) == null)
+			return null;
 		Set<String> keys = DataFile.getCustomYml().getYml().getConfigurationSection(REVIEWPATH)
 				.getKeys(false);
 		HashMap<Integer, String> uuidOutput = new HashMap<>();

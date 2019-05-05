@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import me.robnoo02.plotreview.Query.QueryGroup;
 import me.robnoo02.plotreview.files.DataFileManager;
 import me.robnoo02.plotreview.files.UserDataFile;
 import me.robnoo02.plotreview.files.UserDataManager;
@@ -40,14 +41,13 @@ public class ReviewCmd implements CommandExecutor {
 		case "list": // /review list
 			return (!(sender instanceof Player)) ? true : ReviewListGui.show((Player) sender, 1, null); // Opens Gui
 		case "credits":
-			return SendMessageUtil.CREDITS.send(sender, true);
+			return SendMessageUtil.CREDITS.send(sender, QueryGroup.PLUGIN.get(0));
 		case "info": // /review info <id>
 			if (args.length < 2) return true;
-			String id = args[1]; // Review ticket ID
-			if (!StringUtils.isNumeric(id)) return true; // Prevent Cast exception; exits when not a valid number is given
-			if (DataFileManager.containsId(Integer.valueOf(id))) return true; // Prevent nullpointer exception
-			String uuid = DataFileManager.getUUID(Integer.valueOf(id)); // extracts Player UUID from datafile
-			SendMessageUtil.REVIEW_INFO.sendReview(sender, id, uuid, UserDataManager.getUserDataFile(Integer.valueOf(id)).getUserData(Integer.valueOf(id)));
+			if (!StringUtils.isNumeric(args[1])) return true; // Prevent Cast exception; exits when not a valid number is given
+			int id = Integer.valueOf(args[1]); // Review ticket ID
+			if (!DataFileManager.containsId(id)) return true; // Prevent nullpointer exception
+			SendMessageUtil.REVIEW_INFO.send(sender, QueryGroup.INFO.get(id));
 			/*
 			 * ^^^^ This is a big problem. SendMessageUtil replaces all placeholders from
 			 * the message with the values of the parameters.

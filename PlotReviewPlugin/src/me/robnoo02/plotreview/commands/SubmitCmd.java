@@ -27,6 +27,8 @@ public class SubmitCmd implements CommandExecutor {
 		Player p = (Player) sender;
 		if (!cmd.getName().equalsIgnoreCase("submit"))
 			return true;
+		if(!SubmitManager.possibleToSubmit(p))
+			return true;
 		if (SubmitManager.isSubmitQueued(p)) {
 			if (args.length == 0)
 				return SendMessageUtil.CONFIRM_OR_CANCEL.send(p, true);
@@ -42,8 +44,7 @@ public class SubmitCmd implements CommandExecutor {
 		} else {
 			if (!PermissionUtil.SUBMIT_PLOT.hasAndWarn((Player) sender))
 				return true;
-			if (SubmitManager.possibleToSubmit(p))
-				SubmitManager.addSubmitQueue(p);
+			SubmitManager.addSubmitQueue(p);
 			return SendMessageUtil.SUBMIT.send(sender, true);
 		}
 	}

@@ -11,11 +11,15 @@ import me.robnoo02.plotreview.score.ReviewScore;
 
 public class ScoreHandler {
 
+	private static final double PASS_THRESHOLD = 4.0;
+
 	public static void handleNewReview(final int id, final String scores, final OfflinePlayer staff) {
 		final ReviewScore score = new ReviewScore(id, staff, scores);
 		score.update();
 
 		// At this point, all values are up to date
+
+		boolean passes = score.getAvgStoc() >= PASS_THRESHOLD;
 
 		UserDataFile file = UserDataManager.getUserDataFile(id);
 		file.setString(id, TicketDataField.STRUCTURE_SCORE, String.valueOf(score.getStructureScore()));
@@ -24,14 +28,17 @@ public class ScoreHandler {
 		file.setString(id, TicketDataField.COMPOSITION_SCORE, String.valueOf(score.getCompositionScore()));
 		file.setString(id, TicketDataField.STOC, String.valueOf(score.getStoc()));
 		file.setString(id, TicketDataField.AVERAGE_STOC, String.valueOf(score.getAvgStoc()));
-		file.setString(id, TicketDataField.STAFF, score.getStaff().getName());
+		file.setString(id, TicketDataField.STAFF, score.getStaff().getUniqueId().toString());
 		
-		file.setString(id, PlayerInfoField.TOTAL_STOC, String.valueOf(score.getTotStoc()));
-		file.setString(id, PlayerInfoField.AVERAGE_STOC, String.valueOf(score.getTotAvgStoc()));
-		file.setString(id, PlayerInfoField.RATING, String.valueOf(score.getRating()));
-		file.setString(id, PlayerInfoField.NUMBER_OF_SUBMISSIONS, String.valueOf(score.getSubmissions()));
-		file.setString(id, PlayerInfoField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
 		file.setString(id, PlayerInfoField.LATEST_NAME, String.valueOf(score.getReviewee().getName()));
+
+		if (passes) {
+			file.setString(id, PlayerInfoField.TOTAL_STOC, String.valueOf(score.getTotStoc()));
+			file.setString(id, PlayerInfoField.AVERAGE_STOC, String.valueOf(score.getTotAvgStoc()));
+			file.setString(id, PlayerInfoField.RATING, String.valueOf(score.getRating()));
+			file.setString(id, PlayerInfoField.ACCEPTED_SUBMISSIONS, String.valueOf(score.getSubmissions()));
+			file.setString(id, PlayerInfoField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
+		}
 
 		if (score.getReviewee().isOnline()) {
 

@@ -1,27 +1,25 @@
 package me.robnoo02.plotreview.utils;
 
-import me.robnoo02.plotreview.Main;
+import java.util.HashMap;
 
-public enum Placeholder {
+import me.robnoo02.plotreview.Query.QueryElement;
 
-	SERVER_NAME("%server%", Main.getInstance().getServer().getName()), 
-	PLUGIN_VERSION("%version%",Main.getInstance().getDescription().getVersion().toString()), 
-	PLUGIN_DESCRIPTION("%description%",Main.getInstance().getDescription().getDescription());
-
-	private String placeholder;
-	private String placeholderContent;
-
-	private Placeholder(String holder, String content) {
-		this.placeholder = holder;
-		this.placeholderContent = content;
+public class Placeholder {
+	
+	private final HashMap<QueryElement, String> values;
+	
+	public Placeholder(HashMap<QueryElement, String> values) {
+		this.values = values;
 	}
 
-	public String value() {
-		return this.placeholderContent;
-	}
-
-	public String placeholder() {
-		return this.placeholder;
+	public String replace(String input) {
+		for(QueryElement element: values.keySet()) {
+			String placeholder = element.getPlaceHolder();
+			if(input.contains(placeholder) && (values.get(element) != null)) {
+				input = input.replaceAll(placeholder, values.get(element));
+			}
+		}
+		return input;
 	}
 
 }
