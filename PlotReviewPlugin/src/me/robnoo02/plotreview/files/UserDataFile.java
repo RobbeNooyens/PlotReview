@@ -3,7 +3,7 @@ package me.robnoo02.plotreview.files;
 import java.util.HashMap;
 import java.util.UUID;
 
-import me.robnoo02.plotreview.files.UserDataFileFields.OldScoresField;
+import me.robnoo02.plotreview.files.UserDataFileFields.NewScoresField;
 import me.robnoo02.plotreview.files.UserDataFileFields.PlayerInfoField;
 import me.robnoo02.plotreview.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreview.files.UserDataFileFields.UserDataField;
@@ -53,7 +53,7 @@ public class UserDataFile {
 			if(!yml.containsKey(field.getPath()))
 				setString(0, field, field.getDefaultValue());
 		}
-		for(OldScoresField field: OldScoresField.values()){
+		for(NewScoresField field: NewScoresField.values()){
 			if(!yml.containsKey(field.getPath()))
 				setString(0, field, field.getDefaultValue());
 		}
@@ -84,11 +84,11 @@ public class UserDataFile {
 		return fields;
 	}
 	
-	public HashMap<OldScoresField, String> getOldScores(){
-		HashMap<OldScoresField, String> fields = new HashMap<>();
-		for (OldScoresField field : OldScoresField.values())
+	public HashMap<NewScoresField, String> getNewScores(){
+		HashMap<NewScoresField, String> fields = new HashMap<>();
+		for (NewScoresField field : NewScoresField.values())
 			fields.put(field, getString(0, field));
-		for(OldScoresField field: fields.keySet())
+		for(NewScoresField field: fields.keySet())
 			if(fields.get(field) == null)
 				fields.put(field, field.getDefaultValue());
 		return fields;
@@ -132,8 +132,8 @@ public class UserDataFile {
 				setString(0, field, data.get(field)); // Sets value for each key in yml
 	}
 	
-	public void setOldScores(final HashMap<OldScoresField, String> data) {
-		for(OldScoresField field: OldScoresField.values()) // Loops through its keys
+	public void setOldScores(final HashMap<NewScoresField, String> data) {
+		for(NewScoresField field: NewScoresField.values()) // Loops through its keys
 			if(data.containsKey(field) && data.get(field) != null) // Checks if given data contains requested data
 				setString(0, field, data.get(field)); // Sets value for each key in yml
 	}

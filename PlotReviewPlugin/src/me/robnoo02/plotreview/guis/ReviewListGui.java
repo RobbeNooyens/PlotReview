@@ -5,21 +5,20 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.intellectualcrafters.plot.object.PlotPlayer;
 
+import me.robnoo02.plotreview.Query.QueryElement;
 import me.robnoo02.plotreview.files.DataFileManager;
-import me.robnoo02.plotreview.files.UserDataManager;
 import me.robnoo02.plotreview.files.UserDataFileFields.TicketDataField;
+import me.robnoo02.plotreview.files.UserDataManager;
 import me.robnoo02.plotreview.guis.GuiUtility.Gui;
 import me.robnoo02.plotreview.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreview.utils.PlotUtil;
 import me.robnoo02.plotreview.utils.RankUtil;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
+import me.robnoo02.plotreview.utils.SendMessageUtil;
 
 public class ReviewListGui extends Gui implements SkullTextures {
 
@@ -28,7 +27,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	private final HashMap<Integer, String> unreviewed;
 
 	private ReviewListGui(Player p, int page, Gui previousGui) {
-		super(p, "§4§lReview History", 54, page);
+		super(p, "&8Pending Reviews", 54, page);
 		this.unreviewed = DataFileManager.getUnreviewedReferences();
 		if (unreviewed != null) {
 			this.UNREVIEWED_SIZE = unreviewed.size();
@@ -102,8 +101,8 @@ public class ReviewListGui extends Gui implements SkullTextures {
 						.lore("&3(" + String.valueOf(id) + ")", "&7World: &f" + info.get(TicketDataField.WORLD),
 								"&7Plot: &f[" + info.get(TicketDataField.PLOT) + "]")
 						.leftClick(
-								() -> PlotUtil.getPlot(info.get(TicketDataField.WORLD), info.get(TicketDataField.PLOT))
-										.teleportPlayer(PlotPlayer.wrap(this.getPlayer())))
+								() -> {PlotUtil.getPlot(info.get(TicketDataField.WORLD), info.get(TicketDataField.PLOT))
+										.teleportPlayer(PlotPlayer.wrap(this.getPlayer())); getClickable(id).run();})
 						.rightClick(getClickable(id))
 						.playerSkull(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName()).build();
 				items[i++] = item;
@@ -115,13 +114,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	}
 
 	private Runnable getClickable(int reviewId) {
-		String command = "/review score " + String.valueOf(reviewId) + " ";
-		IChatBaseComponent comp = ChatSerializer.a(
-				"{\"text\":\"Click to review plot\",\"color\":\"gold\",\"bold\":true,\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\""
-						+ command + "\"}}");
-		PacketPlayOutChat packet = new PacketPlayOutChat(comp);
-		CraftPlayer player = (CraftPlayer) getPlayer();
-		Runnable runnable = () -> player.getHandle().playerConnection.sendPacket(packet);
+		Runnable runnable = () -> SendMessageUtil.CLICK_TO_REVIEW.send((CommandSender) getPlayer(), QueryElement.TICKET_ID, String.valueOf(reviewId));
 		return runnable;
 	}
 

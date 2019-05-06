@@ -1,8 +1,18 @@
 # Set a message to a list with 1 item 'none' to disable this message.
 # empty-example:
 # - none
+# You can also add json messages. Generate messages here: http://minecraft.tools/en/json_text.php?
+# json-example:
+# - @json["", {"text":"json"}]
 ranks:
-  player: '&8[Player]'
+  default: '&8[Player]'
+  novice: '&a[Novice]'
+  apprentice: '&9[Apprentice]'
+  architect: '&b[Architect]'
+  designer: '&d[Designer]'
+  artisan: '&5[Artisan]'
+  master: '&6[Master]'
+  
 score-syntax:
   structure: 1
   terrain: 2
@@ -63,7 +73,7 @@ messages:
   - '§7[§eREVIEW&7] §7Your review has been sent!'
   plot_reviewed:
   - '§7[§eREVIEW&7] §7%staff_name% has reviewed your plot!'
-  - '@json["",{"text":"[","color":"gray"},{"text":"REVIEW","color":"yellow"},{"text":"] Click ","color":"gray"},{"text":"here","color":"aqua","clickEvent":{"action":"run_command","value":"/review info %ticket_id%"}},{"text":" to view the results!","color":"gray"}]'
+  - '§7[§eREVIEW&7] §7Use §b/review summary &7to see the results!'
   confirm_or_cancel:
   - "§7[§eREVIEW&7] &cWarning&7: Please choose 'confirm' or 'cancel' as parameter."
   review_info:
@@ -93,4 +103,24 @@ messages:
   - '§3Plot: §b%world% %plot%'
   - ' '
   - '§8§m-----------------------------------------------------'
+  review_summary:
+  - ' '
+  - '&8&m-----------------&7[ &6&lReview Summary &7]§8&m------------------'
+  - ' '
+  - '  &eYour plot scored:'
+  - '    &f• &7Structure - %structure_score%'
+  - '    &f• &7Terrain - %terrain_score%'
+  - '    &f• &7Organics - %organics_score%'
+  - '    &f• &7Composition - %composition_score%'
+  - ' '
+  - ' &7 &ko&r &7>> &6%tot_plot_score% Plot Score &7(%add_tot_plot_score%&7) << &ko'
+  - ' &7 &ko&r &7>> &6%rating% Rating &7(%add_rating%&7) << &ko'
+  - ' '
+  - '&8&m-----------------------------------------------------'
+  no_pending_review:
+  - "§7[§eREVIEW&7] §cWarning&7: You don't have new reviews!"
+  invalid_argument:
+  - '§7[§eREVIEW&7] §cWarning&7: Invalid argument!'
+  click_to_review:
+  - '@json["",{"text":"[","color":"gray"},{"text":"REVIEW","color":"yellow"},{"text":"]","color":"gray"},{"text":" Click ","color":"gray"},{"text":"here","color":"aqua","clickEvent":{"action":"suggest_command","value":"/review score %ticket_id% "},"hoverEvent":{"action":"show_text","value":"§bS-T-O-C"}},{"text":" to review the plot.","color":"gray"}]'
   

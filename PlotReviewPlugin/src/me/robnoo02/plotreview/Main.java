@@ -9,6 +9,7 @@ import me.robnoo02.plotreview.commands.DebugCmd;
 import me.robnoo02.plotreview.commands.PreCommandEvent;
 import me.robnoo02.plotreview.commands.ReviewCmd;
 import me.robnoo02.plotreview.commands.SubmitCmd;
+import me.robnoo02.plotreview.events.ReviewJoinLeaveEvent;
 import me.robnoo02.plotreview.files.ConfigManager;
 import me.robnoo02.plotreview.files.DataFile;
 import me.robnoo02.plotreview.guis.GuiUtility;
@@ -20,6 +21,7 @@ public class Main extends JavaPlugin {
 		// Setup classes implementing Listener
 		Bukkit.getPluginManager().registerEvents(new GuiUtility(), this);
 		Bukkit.getPluginManager().registerEvents(new PreCommandEvent(), this);
+		Bukkit.getPluginManager().registerEvents(new ReviewJoinLeaveEvent(), this);
 		// Registering classes implementing CommandExecutor
 		getCommand("review").setExecutor(new ReviewCmd());
 		getCommand("submit").setExecutor(new SubmitCmd());

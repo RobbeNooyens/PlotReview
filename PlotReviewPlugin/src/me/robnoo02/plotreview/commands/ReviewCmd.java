@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import me.robnoo02.plotreview.Query.QueryElement;
 import me.robnoo02.plotreview.Query.QueryGroup;
 import me.robnoo02.plotreview.files.ConfigManager;
 import me.robnoo02.plotreview.files.DataFileManager;
@@ -73,24 +74,40 @@ public class ReviewCmd implements CommandExecutor {
 			}
 			return HistoryGui.show(p, 1, items, null);
 		case "score":
-			if(!(sender instanceof Player))
-				return true;
+			if (!(sender instanceof Player)) return true;
 			if (args.length < 3) return true;
 			int ticketId = Integer.valueOf(args[1]);
-			
+
 			ScoreHandler.handleNewReview(ticketId, args[2], ((Player) sender));
-			
-			/*String userUUID = DataFileManager.getUUID(Integer.valueOf(ticketId));
-			UserDataFile userFile = UserDataManager.getUserDataFile(userUUID);
-			HashMap<STOC, String> scores = STOC.fromStringStrings(args[2]);
-			userFile.setString(ticketId, TicketDataField.STRUCTURE_SCORE, scores.get(STOC.STRUCTURE));
-			userFile.setString(ticketId, TicketDataField.TERRAIN_SCORE, scores.get(STOC.TERRAIN));
-			userFile.setString(ticketId, TicketDataField.ORGANICS_SCORE, scores.get(STOC.ORGANICS));
-			userFile.setString(ticketId, TicketDataField.COMPOSITION_SCORE, scores.get(STOC.COMPOSITION));
-			userFile.setString(ticketId, TicketDataField.STOC, String.valueOf(STOCMaths.calcAverage(scores, ticketId)));
-			userFile.setString(ticketId, TicketDataField.STAFF, ((Player) sender).getUniqueId().toString());*/
 			DataFileManager.setReviewed(Integer.valueOf(ticketId), true);
-			return SendMessageUtil.STAFF_REVIEWED_PLOT .send(sender, true);
+			return SendMessageUtil.STAFF_REVIEWED_PLOT.send(sender, true);
+		case "summary":
+			if (args.length == 1) {
+				if (!(sender instanceof Player)) return true;
+				if (Boolean.valueOf(QueryElement.NEW_SCORES_AVAILABLE.request(-1, (Player) sender))) {
+					int lastId = Integer.valueOf(QueryElement.LAST_TICKET_ID.request(-1, (Player) sender));
+					if(lastId < 0)
+						return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
+					SendMessageUtil.REVIEW_SUMMARY.send(sender, QueryGroup.REVIEW_SUMMARY.get(lastId));
+				} else {
+					return SendMessageUtil.NO_PENDING_REVIEW.send(sender);
+				}
+			} else {
+				OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
+				if(targetPlayer == null)
+					return SendMessageUtil.INVALID_ARGUMENT.send(sender);
+				if (Boolean.valueOf(QueryElement.NEW_SCORES_AVAILABLE.request(-1, targetPlayer))) {
+					// Casting will be succesfull: casted from int to String
+					int lastId = Integer.valueOf(QueryElement.LAST_TICKET_ID.request(-1, targetPlayer));
+					if(lastId < 0)
+						return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
+					SendMessageUtil.REVIEW_SUMMARY.send(sender, QueryGroup.REVIEW_SUMMARY.get(lastId));
+				} else {
+					return SendMessageUtil.NO_PENDING_REVIEW.send(sender);
+				}
+			}
+			return true;
+		case "rl":
 		case "reload":
 			ConfigManager.reload();
 			SendMessageUtil.CONFIG_RELOADED.send(sender);

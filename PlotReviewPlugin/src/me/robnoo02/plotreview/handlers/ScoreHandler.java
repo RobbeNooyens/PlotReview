@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import me.robnoo02.plotreview.Query.QueryGroup;
 import me.robnoo02.plotreview.files.UserDataFile;
-import me.robnoo02.plotreview.files.UserDataFileFields.OldScoresField;
+import me.robnoo02.plotreview.files.UserDataFileFields.NewScoresField;
 import me.robnoo02.plotreview.files.UserDataFileFields.PlayerInfoField;
 import me.robnoo02.plotreview.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreview.files.UserDataManager;
@@ -41,15 +41,16 @@ public class ScoreHandler {
 			file.setString(id, PlayerInfoField.ACCEPTED_SUBMISSIONS, String.valueOf(score.getSubmissions()));
 			file.setString(id, PlayerInfoField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
 		}
+		file.setString(id, NewScoresField.AVERAGE_STOC, String.valueOf(score.getAddTotAvgStoc()));
+		file.setString(id, NewScoresField.TOTAL_STOC, String.valueOf(score.getTotStoc()));
+		file.setString(id, NewScoresField.RATING, String.valueOf(score.getAddRating()));
+		file.setString(id, NewScoresField.TOTAL_PLOT_SCORE, String.valueOf(score.getAddTotPlotScore()));
+		file.setString(id, NewScoresField.NEW_SCORES_AVAILABLE, "true");
 
 		if (score.getReviewee().isOnline()) {
 			file.setString(id, PlayerInfoField.REVIEWED_WHILE_OFFLINE, "false");
 		} else {
 			file.setString(id, PlayerInfoField.REVIEWED_WHILE_OFFLINE, "true");
-			file.setString(id, OldScoresField.AVERAGE_STOC, String.valueOf(score.getTotAvgStoc()));
-			file.setString(id, OldScoresField.TOTAL_STOC, String.valueOf(score.getAvgStoc()));
-			file.setString(id, OldScoresField.RATING, String.valueOf(score.getRating()));
-			file.setString(id, OldScoresField.TOTAL_PLOT_SCORE, String.valueOf(score.getTotalPlotScore()));
 		}
 
 		if (score.canRankup()) {

@@ -37,7 +37,7 @@ public class UserDataFileFields {
 		 */
 		@Override
 		public String getPath(int id) {
-			return "tickets." + String.valueOf(id) + "." + this.toString().toLowerCase();
+			return "tickets." + String.valueOf(id) + "." + this.toString().toLowerCase().replaceAll("-", "_");
 		}
 
 		@Override
@@ -62,7 +62,7 @@ public class UserDataFileFields {
 		}
 
 		public String getPath() {
-			return "player-info." + this.toString().toLowerCase();
+			return "player-info." + this.toString().toLowerCase().replaceAll("-", "_");
 		}
 
 		@Override
@@ -71,12 +71,12 @@ public class UserDataFileFields {
 		}
 	}
 
-	public static enum OldScoresField implements UserDataField {
-		AVERAGE_STOC("0"), TOTAL_STOC("0"), RATING("0"), TOTAL_PLOT_SCORE("0");
+	public static enum NewScoresField implements UserDataField {
+		AVERAGE_STOC("0"), TOTAL_STOC("0"), RATING("0"), TOTAL_PLOT_SCORE("0"), NEW_SCORES_AVAILABLE("false");
 
 		private final String defaultVal;
 
-		private OldScoresField(String defaultVal) {
+		private NewScoresField(String defaultVal) {
 			this.defaultVal = defaultVal;
 		}
 
@@ -86,7 +86,7 @@ public class UserDataFileFields {
 		}
 
 		public String getPath() {
-			return "old-score." + this.toString().toLowerCase();
+			return "old-score." + this.toString().toLowerCase().replaceAll("-", "_");
 		}
 
 		@Override

@@ -53,7 +53,7 @@ public class SubmitManager implements DebugUtil {
 		HashMap<TicketDataField, String> fields = new HashMap<>(); // HashMap to transfer Review data easily without creating new custom class Objects
 		fields.put(TicketDataField.DATE, DateFormatterUtil.formatDate(new Date()));
 		fields.put(TicketDataField.PLOT, plot.getId().toString());
-		fields.put(TicketDataField.RANK, RankUtil.getRankName(p));
+		fields.put(TicketDataField.RANK, RankUtil.BuildRank.getHeighest(p).lowerCase());
 		fields.put(TicketDataField.WORLD, plot.getWorldName());
 		DataFileManager.addReview(id, DataFileManager.toDataFileFormat(p.getUniqueId().toString(), PlotUtil.formatPlot(plot), "false")); // Saves Review to datafile
 		UserDataManager.getUserDataFile(id).setUserData(id, fields); // Adds review to userdatafile
