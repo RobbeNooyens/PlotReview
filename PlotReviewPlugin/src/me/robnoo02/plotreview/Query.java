@@ -56,6 +56,10 @@ public class Query {
 		 */
 		RANK,
 		/**
+		 * Comment received from staff
+		 */
+		COMMENT,
+		/**
 		 * Date the review has been created.
 		 */
 		DATE,
@@ -201,6 +205,8 @@ public class Query {
 				return file.getString(ticketId, TicketDataField.WORLD);
 			case STAFF_UUID:
 				return file.getString(ticketId, TicketDataField.STAFF);
+			case COMMENT:
+				return file.getString(ticketId, TicketDataField.COMMENT);
 			case PASSES:
 				return String.valueOf(DataFileManager.getValue(ticketId).contains("passed"));
 			case STAFF_NAME:

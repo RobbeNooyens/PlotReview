@@ -16,6 +16,7 @@ import me.robnoo02.plotreview.Query.QueryGroup;
 import me.robnoo02.plotreview.files.ConfigManager;
 import me.robnoo02.plotreview.files.DataFileManager;
 import me.robnoo02.plotreview.files.UserDataFile;
+import me.robnoo02.plotreview.files.UserDataFileFields.TicketDataField;
 import me.robnoo02.plotreview.files.UserDataManager;
 import me.robnoo02.plotreview.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreview.guis.HistoryGui;
@@ -50,7 +51,7 @@ public class ReviewCmd implements CommandExecutor {
 		case "credits":
 			return SendMessageUtil.CREDITS.send(sender, QueryGroup.PLUGIN.get(0));
 		case "info": // /review info <id>
-			if (args.length < 2) return true;
+			if (args.length < 2) return SendMessageUtil.WRONG_SYNTAX.send(sender, true);
 			if (!StringUtils.isNumeric(args[1])) return true; // Prevent Cast exception; exits when not a valid number is given
 			int id = Integer.valueOf(args[1]); // Review ticket ID
 			if (!DataFileManager.containsId(id)) return true; // Prevent nullpointer exception
@@ -79,7 +80,7 @@ public class ReviewCmd implements CommandExecutor {
 			return HistoryGui.show(p, 1, items, null, target);
 		case "score":
 			if (!(sender instanceof Player)) return true;
-			if (args.length < 3) return true;
+			if (args.length < 3) return SendMessageUtil.WRONG_SYNTAX.send(sender, true);
 			ticketId = Integer.valueOf(args[1]);
 			p = (Player) sender;
 			if (PlotUtil.getPlot(QueryElement.WORLD.request(ticketId, p), QueryElement.PLOT_ID.request(ticketId, p))
@@ -113,7 +114,24 @@ public class ReviewCmd implements CommandExecutor {
 			}
 			return true;
 		case "comment":
-			sender.sendMessage("Work in progress.");
+			if(!(sender instanceof Player)) return true;
+			if(args.length < 3) return SendMessageUtil.WRONG_SYNTAX.send(sender, true);
+			if(!StringUtils.isNumeric(args[1])) return SendMessageUtil.INVALID_ARGUMENT.send(sender, true);
+			ticketId = Integer.valueOf(args[1]);
+			p = (Player) sender;
+			if(!DataFileManager.getValue(ticketId).contains("failed"))
+				return SendMessageUtil.SOMETHING_WENT_WRONG.send(sender);
+			if(!QueryElement.STAFF_UUID.request(ticketId, p).equalsIgnoreCase(p.getUniqueId().toString()))
+				return SendMessageUtil.SOMETHING_WENT_WRONG.send(sender);
+			//if(!QueryElement.COMMENT.request(ticketId, p).equalsIgnoreCase("none"))
+			//	return true;
+			StringBuilder comment = new StringBuilder();
+			for(int i = 0; i < args.length; i++) {
+				if(i == 0 || i == 1)
+					continue;
+				comment.append(args[i] + ((i == (args.length - 1)) ? "" : " "));
+			}
+			UserDataManager.getUserDataFile(ticketId).setString(ticketId, TicketDataField.COMMENT, comment.toString());
 			return true;
 		case "rl":
 		case "reload":

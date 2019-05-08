@@ -118,6 +118,7 @@ public class HistoryGui extends Gui implements SkullTextures {
 				.lore(getItemLore(info, reviewID))
 				.leftClick(() -> PlotUtil.getPlot(info.get(QueryElement.WORLD), info.get(QueryElement.PLOT_ID))
 						.teleportPlayer(PlotPlayer.wrap(p)))
+				.rightClick(() -> p.sendMessage("§7" + QueryElement.COMMENT.request(reviewID, p)))
 				.material(Material.CONCRETE).data(matData).build();
 	}
 

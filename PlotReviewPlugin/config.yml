@@ -78,6 +78,10 @@ messages:
   - '%prefix% &7Config has been reloaded'
   staff_reviewed_plot:
   - '%prefix% &7Your review has been sent!'
+  wrong_syntax:
+  - '%prefix% %warn% &7Wrong syntax, type &b/review help &7for help!'
+  something_went_wrong:
+  - '%prefix% %warn% &7Oops! Something went wrong.'
   confirm_or_cancel:
   - "%prefix% %warn% &7Please choose 'confirm' or 'cancel' as parameter."
   review_info:
@@ -93,10 +97,11 @@ messages:
   no_past_reviews:
   - "%prefix% %warn% &7You don't have any reviews!"
   online_reviewed:
-  - '§8§m-----------------&7[ &6&lReview Finished &7]§8&m-----------------'
   - ' '
-  - '&7%staff_name% has reviewed your plot!'
-  - '&7Use &b/review summary &7to see the results!'
+  - '§8§m-----------------&7[ &6&lReview Finished &7]§8&m------------------'
+  - ' '
+  - '  &7%staff_name% has reviewed your plot!'
+  - '  &7Use &b/review summary &7to see the results!'
   - ' '
   - '§8§m-----------------------------------------------------'
   offline_reviewed:
