@@ -1,5 +1,6 @@
 package me.robnoo02.plotreview.guis;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -22,34 +23,45 @@ import me.robnoo02.plotreview.utils.SendMessageUtil;
 
 public class ReviewListGui extends Gui implements SkullTextures {
 
-	private static final int START_FILL = 0, END_FILL = 44;
+	private static final int[] SLOTS = {10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34,37,38,39,40,41,42,43},
+			CORNER_SLOTS = {0,8,45,53},
+			LINES_SLOTS = {1,2,3,4,5,6,7,9,18,27,36,17,26,35,44,46,47,48,50,51,52};
 	private final int UNREVIEWED_SIZE;
-	private final HashMap<Integer, String> unreviewed;
+	private GuiItem pane1, pane2;
 
-	private ReviewListGui(Player p, int page, Gui previousGui) {
-		super(p, "&8Pending Reviews", 54, page);
-		this.unreviewed = DataFileManager.getUnreviewedReferences();
+	private ReviewListGui(Player p, int page, Gui previousGui, HashMap<Integer, String> unreviewed) {
+		super(p, "&8Review List &e[" + (unreviewed==null?0:unreviewed.size()) + "]", 54, page);
+		this.UNREVIEWED_SIZE = unreviewed==null?0:unreviewed.size();
 		if (unreviewed != null) {
-			this.UNREVIEWED_SIZE = unreviewed.size();
-			this.fillSlots(START_FILL, END_FILL, page, getReviewHeads());
-		} else {
-			this.UNREVIEWED_SIZE = 0; 
+			this.fillSlots(SLOTS, page, getReviewHeads());
 		}
+		border(page);
 		this.setGuiLink(previousGui);
-		this.setItem(48, getPreviousPage());
+		this.setItem(46, getPreviousPage());
 		this.setItem(49, getExit());
-		this.setItem(50, getNextPage());
+		this.setItem(52, getNextPage());
+	}
+	
+	private void border(int page) {
+		pane1 = getPane(3);
+		pane2 = getPane(0);
+		GuiItem[] panes1 = new GuiItem[CORNER_SLOTS.length];
+		GuiItem[] panes2 = new GuiItem[LINES_SLOTS.length];
+		Arrays.fill(panes1, pane1);
+		Arrays.fill(panes2, pane2);
+		this.fillSlots(CORNER_SLOTS, page, panes1);
+		this.fillSlots(LINES_SLOTS, page, panes2);
 	}
 
 	public static boolean show(Player p, int page, Gui previousGui) {
 		if (p == null || page < 1) return false;
-		Gui gui = new ReviewListGui(p, page, previousGui);
+		Gui gui = new ReviewListGui(p, page, previousGui, DataFileManager.getUnreviewedReferences());
 		gui.open();
 		return true;
 	}
 
 	public static void show(ReviewListGui gui) {
-		Gui hGui = new ReviewListGui(gui.getPlayer(), gui.getPage(), gui);
+		Gui hGui = new ReviewListGui(gui.getPlayer(), gui.getPage(), gui, DataFileManager.getUnreviewedReferences());
 		hGui.open();
 	}
 
@@ -57,9 +69,9 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	 * @return GuiItem to go to the next page, only used in reviewGui() method.
 	 */
 	private GuiItem getNextPage() {
-		int total = GuiUtility.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
-		if (this.getPage() >= total) return null;
-		return new GuiItem.Builder().name("&aNext Page").customSkull(ARROW_RIGHT)
+		int total = GuiUtility.getTotalPages(SLOTS, this.getPage(), this.UNREVIEWED_SIZE);
+		if (this.getPage() >= total) return pane2;
+		return new GuiItem.Builder().name("&aNext Page").material(Material.PAPER)
 				.lore("&7Page &e" + this.getPage() + "/" + total).click(() -> ReviewListGui.show(this)).build();
 	}
 
@@ -67,9 +79,9 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	 * @return GuiItem to go back to the previous page.
 	 */
 	private GuiItem getPreviousPage() {
-		int total = GuiUtility.getTotalPages(START_FILL, END_FILL, this.getPage(), this.UNREVIEWED_SIZE);
-		if (this.getPage() < 2 || this.getGuiLink() == null) return null;
-		return new GuiItem.Builder().name("&cPrevious Page").customSkull(ARROW_LEFT)
+		int total = GuiUtility.getTotalPages(SLOTS, this.getPage(), this.UNREVIEWED_SIZE);
+		if (this.getPage() < 2 || this.getGuiLink() == null) return pane2;
+		return new GuiItem.Builder().name("&cPrevious Page").material(Material.PAPER)
 				.lore("&7Page &e" + this.getPage() + "/" + total).click(() -> this.getGuiLink().open()).build();
 	}
 
@@ -79,6 +91,10 @@ public class ReviewListGui extends Gui implements SkullTextures {
 	private GuiItem getExit() {
 		return new GuiItem.Builder().material(Material.BARRIER).name("&cExit Menu")
 				.click(() -> this.getPlayer().closeInventory()).build();
+	}
+	
+	private GuiItem getPane(int color) {
+		return new GuiItem.Builder().material(Material.STAINED_GLASS_PANE).data(color).name(" ").hideFlags().build();
 	}
 
 	/**
@@ -104,7 +120,7 @@ public class ReviewListGui extends Gui implements SkullTextures {
 								() -> {PlotUtil.getPlot(info.get(TicketDataField.WORLD), info.get(TicketDataField.PLOT))
 										.teleportPlayer(PlotPlayer.wrap(this.getPlayer())); getClickable(id).run();})
 						.rightClick(getClickable(id))
-						.playerSkull(Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName()).build();
+						.playerSkull(this.getPlayer().getName()).build();
 				items[i++] = item;
 			} catch (Exception e) {
 				continue;

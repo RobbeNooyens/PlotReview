@@ -18,6 +18,13 @@ score-syntax:
   terrain: 2
   organics: 3
   composition: 4
+# TODO: add placeholder support
+config-tags:
+  # Use %test1% or %test2% in a message to apply these placeholders
+  test1: '[TEST1]'
+  test2: '[TEST2]'
+  prefix: '&7[&eREVIEW&7]'
+  warn: '&cWarning:'
 messages:
   credits:
   - '§8§m-----------------------------------------------------'
@@ -44,7 +51,7 @@ messages:
   - ' '
   - '&8&m-------------------&7[ &6&lPlot Submit &7]§8&m--------------------'
   - ' '
-  - '&7[&c!&7] §7You are about to submit a plot for review. The plot can be either accepted or denied. If accepted, your total scores will increase. If not, a staffmember will leave a comment for you.'
+  - '&c[!] §7You are about to submit a plot for review. The plot can be either accepted or denied. If accepted, your total scores will increase. If not, a staffmember will leave a comment for you.'
   - ' '
   - '&6&lRULES:'
   - '&c[1] &7No copied builds.'
@@ -56,26 +63,23 @@ messages:
   - ' '
   - '&8&m-----------------------------------------------------'
   not_plotowner:
-  - "§7[§eREVIEW&7] §cWarning&7: You aren't the owner of this plot!"
+  - "%prefix% %warn% &7You aren't the owner of this plot!"
   not_on_plot:
-  - '§7[§eREVIEW&7] §cWarning&7: You must be on a plot.'
+  - '%prefix% %warn% &7You must be on a plot.'
   already_submitted:
-  - '§7[§eREVIEW&7] §cWarning&7: This plot has already been submitted!'
+  - '%prefix% %warn% &7This plot has already been submitted!'
   plot_submitted:
-  - '§7[§eREVIEW&7] §aCongrats&7! Your plot has been succesfully submitted!'
+  - '%prefix% &aCongrats! &7Your plot has been succesfully submitted!'
   no_perms:
-  - '§7[§eREVIEW&7] §cWarning&7: Insufficient permissions!'
+  - '%prefix% %warn% &7Insufficient permissions!'
   cancelled:
-  - '§7[§eREVIEW&7] §cWarning&7: Submit has been cancelled!'
+  - '%prefix% %warn% &7Submit has been cancelled!'
   config_reloaded:
-  - '§7[§eREVIEW&7] §7Config has been reloaded'
+  - '%prefix% &7Config has been reloaded'
   staff_reviewed_plot:
-  - '§7[§eREVIEW&7] §7Your review has been sent!'
-  plot_reviewed:
-  - '§7[§eREVIEW&7] §7%staff_name% has reviewed your plot!'
-  - '§7[§eREVIEW&7] §7Use §b/review summary &7to see the results!'
+  - '%prefix% &7Your review has been sent!'
   confirm_or_cancel:
-  - "§7[§eREVIEW&7] &cWarning&7: Please choose 'confirm' or 'cancel' as parameter."
+  - "%prefix% %warn% &7Please choose 'confirm' or 'cancel' as parameter."
   review_info:
   - '&3ID: &a%ticket_id%'
   - '&3Reviewee: &a%reviewee_name%'
@@ -87,20 +91,19 @@ messages:
   - '&3Average stoc: &a%avg_stoc%'
   - '&3Staff: &a%staff_name%'
   no_past_reviews:
-  - "§7[§eREVIEW&7] &cWarning&7: You don't have any reviews!"
+  - "%prefix% %warn% &7You don't have any reviews!"
   online_reviewed:
-  - '§8§m-----------------------------------------------------'
+  - '§8§m-----------------&7[ &6&lReview Finished &7]§8&m-----------------'
   - ' '
-  - '§6Your plot has been reviewed by %staff%!'
-  - '§3Ticket ID: §b%review_id%'
+  - '&7%staff_name% has reviewed your plot!'
+  - '&7Use &b/review summary &7to see the results!'
   - ' '
   - '§8§m-----------------------------------------------------'
   offline_reviewed:
-  - '§8§m-----------------------------------------------------'
+  - '§8§m-----------------&7[ &6&lReview Finished &7]§8&m-----------------'
   - ' '
   - '§6Your plot has been reviewed by %staff% while you were offline!'
-  - '§3Ticket ID: §b%review_id%'
-  - '§3Plot: §b%world% %plot%'
+  - '&7Use &b/review summary &7to see the results!'
   - ' '
   - '§8§m-----------------------------------------------------'
   review_summary:
@@ -112,15 +115,22 @@ messages:
   - '    &f• &7Terrain - %terrain_score%'
   - '    &f• &7Organics - %organics_score%'
   - '    &f• &7Composition - %composition_score%'
+  - '    &f• &7Plot Score - %plot_score%'
   - ' '
-  - ' &7 &ko&r &7>> &6%tot_plot_score% Plot Score &7(%add_tot_plot_score%&7) << &ko'
-  - ' &7 &ko&r &7>> &6%rating% Rating &7(%add_rating%&7) << &ko'
+  - ' &7 &ko&r &7>> &6%add_tot_plot_score% Plot Score &7(%tot_plot_score%&7) << &ko'
+  - ' &7 &ko&r &7>> &6%add_rating% Rating &7(%rating%&7) << &ko'
   - ' '
   - '&8&m-----------------------------------------------------'
   no_pending_review:
-  - "§7[§eREVIEW&7] §cWarning&7: You don't have new reviews!"
+  - "%prefix% %warn% &7You don't have new reviews!"
   invalid_argument:
-  - '§7[§eREVIEW&7] §cWarning&7: Invalid argument!'
+  - '%prefix% %warn% &7Invalid argument!'
+  already_has_submission:
+  - '%prefix% %warn% &7Your older submission should be reviewed first!'
+  cant_review_own_plot:
+  - "%prefix% %warn% &7You can't review your own plot!"
+  write_comment:
+  - '%prefix% Let the builder know what he/she can improve!'
+  - '@json["",{"text":"[","color":"gray"},{"text":"REVIEW","color":"yellow"},{"text":"] Click ","color":"gray"},{"text":"here","color":"aqua","clickEvent":{"action":"suggest_command","value":"/review comment %ticket_id%"}},{"text":" to leave a comment!","color":"gray"}]'
   click_to_review:
-  - '@json["",{"text":"[","color":"gray"},{"text":"REVIEW","color":"yellow"},{"text":"]","color":"gray"},{"text":" Click ","color":"gray"},{"text":"here","color":"aqua","clickEvent":{"action":"suggest_command","value":"/review score %ticket_id% "},"hoverEvent":{"action":"show_text","value":"§bS-T-O-C"}},{"text":" to review the plot.","color":"gray"}]'
-  
+  - '@json["",{"text":"[","color":"gray"},{"text":"REVIEW","color":"yellow"},{"text":"]","color":"gray"},{"text":" Click ","color":"gray"},{"text":"here","color":"aqua","clickEvent":{"action":"suggest_command","value":"/review score %ticket_id% "},"hoverEvent":{"action":"show_text","value":"§bRemember: S-T-O-C"}},{"text":" to review the plot.","color":"gray"}]'

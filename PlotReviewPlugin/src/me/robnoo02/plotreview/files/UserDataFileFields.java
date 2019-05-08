@@ -20,7 +20,7 @@ public class UserDataFileFields {
 	public static enum TicketDataField implements UserDataField {
 		RANK("default"), DATE("2000-01-01 00:00:00"), WORLD("world"), PLOT("0;0"), STOC("0"), AVERAGE_STOC(
 				"0"), STRUCTURE_SCORE("0"), TERRAIN_SCORE(
-						"0"), ORGANICS_SCORE("0"), COMPOSITION_SCORE("0"), STAFF("unknown"), REVIEWED("false"), PASSES("false");
+						"0"), ORGANICS_SCORE("0"), COMPOSITION_SCORE("0"), PLOT_SCORE("0"), STAFF("unknown");
 
 		private final String defaultVal;
 

@@ -21,6 +21,8 @@ import me.robnoo02.plotreview.guis.GuiUtility.GuiItem;
 import me.robnoo02.plotreview.guis.HistoryGui;
 import me.robnoo02.plotreview.guis.ReviewListGui;
 import me.robnoo02.plotreview.handlers.ScoreHandler;
+import me.robnoo02.plotreview.utils.PermissionUtil;
+import me.robnoo02.plotreview.utils.PlotUtil;
 import me.robnoo02.plotreview.utils.SendMessageUtil;
 
 /**
@@ -37,6 +39,9 @@ public class ReviewCmd implements CommandExecutor {
 		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender)) return true; // Sender should be Player or Console
 		if (!cmd.getName().equalsIgnoreCase("review")) return true; // Command starts with /review
 		if (args.length == 0) return SendMessageUtil.HELP.send(sender, true); // Subcommand required
+		OfflinePlayer target;
+		Player p;
+		int ticketId;
 		switch (args[0]) {
 		case "help": // /review help
 			return SendMessageUtil.HELP.send(sender, true); // Shows help page with possible (sub)commands
@@ -57,8 +62,7 @@ public class ReviewCmd implements CommandExecutor {
 			return true;
 		case "history":
 			if (!(sender instanceof Player)) return true; // Sender should be a Player
-			Player p = (Player) sender;
-			OfflinePlayer target; // Target is the person whose history is requested
+			p = (Player) sender;
 			if (args.length < 2)
 				target = p;
 			else
@@ -69,15 +73,19 @@ public class ReviewCmd implements CommandExecutor {
 				return SendMessageUtil.NO_PAST_REVIEWS.send(p, true); // No review tickets saved for this player
 			ArrayList<GuiItem> items = new ArrayList<>();
 			for (String idKey : file.getCustomYml().getYml().getConfigurationSection("tickets").getKeys(false)) {
-				items.add(HistoryGui.getHistoryItem(p, file.getUserData(Integer.valueOf(idKey)),
+				items.add(HistoryGui.getHistoryItem(p, QueryGroup.HISTORY.get(Integer.valueOf(idKey)),
 						target.getUniqueId().toString(), Integer.valueOf(idKey)));
 			}
-			return HistoryGui.show(p, 1, items, null);
+			return HistoryGui.show(p, 1, items, null, target);
 		case "score":
 			if (!(sender instanceof Player)) return true;
 			if (args.length < 3) return true;
-			int ticketId = Integer.valueOf(args[1]);
-
+			ticketId = Integer.valueOf(args[1]);
+			p = (Player) sender;
+			if (PlotUtil.getPlot(QueryElement.WORLD.request(ticketId, p), QueryElement.PLOT_ID.request(ticketId, p))
+					.getOwners().contains(p.getUniqueId()))
+				if (!PermissionUtil.BYPASS_REVIEW_OWN_PLOT.has(p))
+					return SendMessageUtil.CANT_REVIEW_OWN_PLOT.send(p, true);
 			ScoreHandler.handleNewReview(ticketId, args[2], ((Player) sender));
 			DataFileManager.setReviewed(Integer.valueOf(ticketId), true);
 			return SendMessageUtil.STAFF_REVIEWED_PLOT.send(sender, true);
@@ -86,26 +94,26 @@ public class ReviewCmd implements CommandExecutor {
 				if (!(sender instanceof Player)) return true;
 				if (Boolean.valueOf(QueryElement.NEW_SCORES_AVAILABLE.request(-1, (Player) sender))) {
 					int lastId = Integer.valueOf(QueryElement.LAST_TICKET_ID.request(-1, (Player) sender));
-					if(lastId < 0)
-						return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
+					if (lastId < 0) return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
 					SendMessageUtil.REVIEW_SUMMARY.send(sender, QueryGroup.REVIEW_SUMMARY.get(lastId));
 				} else {
 					return SendMessageUtil.NO_PENDING_REVIEW.send(sender);
 				}
 			} else {
-				OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(args[1]);
-				if(targetPlayer == null)
-					return SendMessageUtil.INVALID_ARGUMENT.send(sender);
-				if (Boolean.valueOf(QueryElement.NEW_SCORES_AVAILABLE.request(-1, targetPlayer))) {
+				target = Bukkit.getOfflinePlayer(args[1]);
+				if (target == null) return SendMessageUtil.INVALID_ARGUMENT.send(sender);
+				if (Boolean.valueOf(QueryElement.NEW_SCORES_AVAILABLE.request(-1, target))) {
 					// Casting will be succesfull: casted from int to String
-					int lastId = Integer.valueOf(QueryElement.LAST_TICKET_ID.request(-1, targetPlayer));
-					if(lastId < 0)
-						return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
+					int lastId = Integer.valueOf(QueryElement.LAST_TICKET_ID.request(-1, target));
+					if (lastId < 0) return SendMessageUtil.NO_PAST_REVIEWS.send(sender);
 					SendMessageUtil.REVIEW_SUMMARY.send(sender, QueryGroup.REVIEW_SUMMARY.get(lastId));
 				} else {
 					return SendMessageUtil.NO_PENDING_REVIEW.send(sender);
 				}
 			}
+			return true;
+		case "comment":
+			sender.sendMessage("Work in progress.");
 			return true;
 		case "rl":
 		case "reload":

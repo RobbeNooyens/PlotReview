@@ -51,7 +51,7 @@ public class GuiUtility implements Listener {
 
 		private final int invSize, page; // Inventory size (amount of squares) + page number
 		private int totalPages;
-		private final String title;
+		private String title;
 		private final Inventory inv;
 		private final Player player;
 		private final GuiItem[] guiContents;
@@ -80,6 +80,10 @@ public class GuiUtility implements Listener {
 
 		public String getTitle() {
 			return title;
+		}
+		
+		public void setTitle(String title) {
+			this.title = title;
 		}
 
 		public Inventory toInventory() {
@@ -120,17 +124,20 @@ public class GuiUtility implements Listener {
 			guiContents[place] = item;
 		}
 		
-		public void fillSlots(int start, int end, int page, GuiItem... items) {
-			if(items == null)
+		public void fillSlots(int[] slots, int page, GuiItem... items) {
+			if(items == null || slots == null || slots.length < 1)
 				return;
-			int perPage = end - start;
+			int perPage = slots.length;
 			this.totalPages = items.length / perPage;
 			if (items.length % perPage > 0)
 				totalPages++;
-			if (start >= 0 && start < end && perPage < 54) {
-				for (int invPlace = start; invPlace < end; invPlace++)
-					if ((invPlace - start) < page * items.length)
-						guiContents[invPlace] = items[((page - 1) * perPage) + (invPlace - start)];
+			int count = 0;
+			for(int i : slots) {
+				if(i < 0 || i > 53)
+					continue;
+				if(count >= items.length)
+					break;
+				guiContents[i] = items[((page - 1) * perPage) + count++];
 			}
 		}
 	}
@@ -410,11 +417,11 @@ public class GuiUtility implements Listener {
 
 	}
 
-	public static int getTotalPages(int start, int end, int page, int size) {
-		if (start >= end)
+	public static int getTotalPages(int[] slots, int page, int size) {
+		if (slots == null)
 			return 0;
-		int totalPages = size / (end - start);
-		if (size % (end-start) > 0)
+		int totalPages = size / (slots.length);
+		if (size % (slots.length) > 0)
 			totalPages++;
 		return totalPages;
 	}

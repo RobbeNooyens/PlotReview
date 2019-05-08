@@ -39,15 +39,6 @@ public class UserDataFile {
 		return yml;
 	}
 	
-	public int getReviewedCount() {
-		int count = 0;
-		for(String ticketId: yml.getConfigSection("tickets.").getKeys(false)) {
-			String path = TicketDataField.REVIEWED.getPath(Integer.valueOf(ticketId));
-			count += (Boolean.valueOf(yml.getString(path)) ? 1 : 0);
-		}
-		return count;
-	}
-	
 	public void fillMissingInfo() {
 		for(PlayerInfoField field: PlayerInfoField.values()){
 			if(!yml.containsKey(field.getPath()))

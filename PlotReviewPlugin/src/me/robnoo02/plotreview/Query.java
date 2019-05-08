@@ -104,6 +104,10 @@ public class Query {
 		 */
 		NEW_SCORES_AVAILABLE,
 		/**
+		 * Plot's score
+		 */
+		PLOT_SCORE,
+		/**
 		 * Total plot score
 		 */
 		TOT_PLOT_SCORE,
@@ -138,8 +142,7 @@ public class Query {
 		/**
 		 * Total rating ifference between previous and new review.
 		 */
-		ADD_RATING,
-		COMMAND_SENDER;
+		ADD_RATING, COMMAND_SENDER;
 
 		/**
 		 * Reads one specific element of a ticket. I've chosen to call the
@@ -182,6 +185,8 @@ public class Query {
 				return file.getString(ticketId, TicketDataField.PLOT);
 			case RANK:
 				return file.getString(ticketId, TicketDataField.RANK);
+			case PLOT_SCORE:
+				return file.getString(ticketId, TicketDataField.PLOT_SCORE);
 			case STOC:
 				return file.getString(ticketId, TicketDataField.STOC);
 			case COMPOSITION_SCORE:
@@ -193,11 +198,11 @@ public class Query {
 			case TERRAIN_SCORE:
 				return file.getString(ticketId, TicketDataField.COMPOSITION_SCORE);
 			case WORLD:
-				return file.getString(ticketId, TicketDataField.COMPOSITION_SCORE);
+				return file.getString(ticketId, TicketDataField.WORLD);
 			case STAFF_UUID:
 				return file.getString(ticketId, TicketDataField.STAFF);
 			case PASSES:
-				return file.getString(ticketId, TicketDataField.PASSES);
+				return String.valueOf(DataFileManager.getValue(ticketId).contains("passed"));
 			case STAFF_NAME:
 				String staffUUID = file.getString(ticketId, TicketDataField.STAFF);
 				OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(staffUUID));
@@ -261,15 +266,15 @@ public class Query {
 	}
 
 	public static int getLastId(UserDataFile file, OfflinePlayer player) {
-		if(file.getCustomYml().getYml().getConfigurationSection("tickets.") == null)
-			return -1;
+		if (file.getCustomYml().getYml().getConfigurationSection("tickets.") == null) return -1;
 		Set<String> keys = file.getCustomYml().getConfigSection("tickets.").getKeys(false);
 		int[] values = new int[keys.size()];
 		int i = 0, highest = 0;
 		for (String key : keys)
 			values[i++] = Integer.valueOf(key);
-		for (int value : values)
-			highest = (value > highest ? value : highest);
+		for (int value : values) {
+			if (value > highest) if (DataFileManager.getValue(value).contains("reviewed")) highest = value;
+		}
 		return highest;
 	}
 
@@ -315,7 +320,12 @@ public class Query {
 		HashMap<TicketDataField, String> userData = UserDataManager.getUserDataFile(ticketId).getUserData(ticketId);
 
 		OfflinePlayer reviewee = Bukkit.getOfflinePlayer(UUID.fromString(DataFileManager.strip(idValue, "\\+", 0)));
-		OfflinePlayer staff = Bukkit.getOfflinePlayer(UUID.fromString(userData.get(TicketDataField.STAFF)));
+		OfflinePlayer staff = null;
+		try {
+			staff = Bukkit.getOfflinePlayer(UUID.fromString(userData.get(TicketDataField.STAFF)));
+		} catch (Exception ignore) {
+			// Not reviewed
+		}
 
 		output.put(QueryElement.TICKET_ID, String.valueOf(ticketId));
 		output.put(QueryElement.REVIEWED_BY_STAFF, DataFileManager.strip(idValue, "\\+", 2));
@@ -323,15 +333,19 @@ public class Query {
 		output.put(QueryElement.REVIEWEE_NAME, reviewee.getName());
 		output.put(QueryElement.DATE, userData.get(TicketDataField.DATE));
 		output.put(QueryElement.PLOT_ID, userData.get(TicketDataField.PLOT));
-		output.put(QueryElement.RANK, userData.get(TicketDataField.RANK));
-		output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
-		output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
-		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
-		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
-		output.put(QueryElement.TERRAIN_SCORE, userData.get(TicketDataField.TERRAIN_SCORE));
 		output.put(QueryElement.WORLD, userData.get(TicketDataField.WORLD));
-		output.put(QueryElement.STAFF_UUID, userData.get(TicketDataField.STAFF));
-		if (staff != null) output.put(QueryElement.STAFF_NAME, staff.getName());
+		output.put(QueryElement.RANK, userData.get(TicketDataField.RANK));
+		if (staff != null) {
+			output.put(QueryElement.STOC, userData.get(TicketDataField.STOC));
+			output.put(QueryElement.AVG_STOC, userData.get(TicketDataField.AVERAGE_STOC));
+			output.put(QueryElement.PLOT_SCORE, userData.get(TicketDataField.STOC));
+			output.put(QueryElement.COMPOSITION_SCORE, userData.get(TicketDataField.COMPOSITION_SCORE));
+			output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
+			output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
+			output.put(QueryElement.TERRAIN_SCORE, userData.get(TicketDataField.TERRAIN_SCORE));
+			output.put(QueryElement.STAFF_UUID, userData.get(TicketDataField.STAFF));
+			output.put(QueryElement.STAFF_NAME, staff.getName());
+		}
 		return output;
 	}
 
@@ -413,15 +427,20 @@ public class Query {
 		output.put(QueryElement.ORGANICS_SCORE, userData.get(TicketDataField.ORGANICS_SCORE));
 		output.put(QueryElement.STRUCTURE_SCORE, userData.get(TicketDataField.STRUCTURE_SCORE));
 		output.put(QueryElement.TERRAIN_SCORE, userData.get(TicketDataField.TERRAIN_SCORE));
+		output.put(QueryElement.PLOT_SCORE, userData.get(TicketDataField.PLOT_SCORE));
 		output.put(QueryElement.RATING, playerInfo.get(PlayerInfoField.RATING));
+		output.put(QueryElement.AVG_STOC, playerInfo.get(PlayerInfoField.AVERAGE_STOC));
 		output.put(QueryElement.TOT_PLOT_SCORE, playerInfo.get(PlayerInfoField.TOTAL_PLOT_SCORE));
 
 		int addRating = Integer.valueOf(newScores.get(NewScoresField.RATING));
-		output.put(QueryElement.ADD_RATING, (addRating >= 0 ? "§a▲" : "§c▼") + newScores.get(NewScoresField.RATING));
+		output.put(QueryElement.RATING, (addRating >= 0 ? "§a▲" : "§c▼") + playerInfo.get(PlayerInfoField.RATING));
+		output.put(QueryElement.ADD_RATING, (addRating >= 0 ? "+" : "-") + newScores.get(NewScoresField.RATING));
 
 		double addPlotScore = Double.valueOf(newScores.get(NewScoresField.TOTAL_PLOT_SCORE));
+		output.put(QueryElement.TOT_PLOT_SCORE,
+				(addPlotScore >= 0 ? "§a▲" : "§c▼") + playerInfo.get(PlayerInfoField.TOTAL_PLOT_SCORE));
 		output.put(QueryElement.ADD_TOT_PLOT_SCORE,
-				(addPlotScore >= 0 ? "§a▲" : "§c▼") + newScores.get(NewScoresField.TOTAL_PLOT_SCORE));
+				(addPlotScore >= 0 ? "+" : "-") + newScores.get(NewScoresField.TOTAL_PLOT_SCORE));
 
 		return output;
 	}

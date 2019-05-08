@@ -1,7 +1,10 @@
 package me.robnoo02.plotreview.files;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.bukkit.configuration.ConfigurationSection;
 
 import me.robnoo02.plotreview.Main;
 import me.robnoo02.plotreview.utils.SendMessageUtil;
@@ -66,6 +69,16 @@ public final class ConfigManager {
 				messageVar.set(none);
 			}
 		}
+	}
+	
+	public static HashMap<String, String> getConfigTags(){
+		HashMap<String, String> configTags = new HashMap<>();
+		ConfigurationSection section = plugin.getConfig().getConfigurationSection("config-tags");
+		if(section == null)
+			return null;
+		for(String s: section.getKeys(false))
+			configTags.put(s, plugin.getConfig().getString("config-tags." + s));
+		return configTags;
 	}
 
 	/*public static HashMap<ScoreAspect, Double> getScore(String score) {

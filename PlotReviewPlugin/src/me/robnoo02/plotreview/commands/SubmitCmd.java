@@ -44,6 +44,8 @@ public class SubmitCmd implements CommandExecutor {
 		} else {
 			if (!PermissionUtil.SUBMIT_PLOT.hasAndWarn((Player) sender))
 				return true;
+			
+			
 			SubmitManager.addSubmitQueue(p);
 			return SendMessageUtil.SUBMIT.send(sender, true);
 		}

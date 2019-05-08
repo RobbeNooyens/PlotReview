@@ -28,7 +28,7 @@ public class DataFileManager {
 		HashMap<Integer, String> uuidOutput = new HashMap<>();
 		for (String key : keys) { // Loops through keys to determine which Reviews aren't reviewed yet
 			String value = getValue(Integer.valueOf(key));
-			if (value.contains("false"))
+			if (value.contains("unreviewed"))
 				uuidOutput.put(Integer.valueOf(key), getUUID(Integer.valueOf(key))); // Adds if not reviewed
 		}
 		return uuidOutput;
@@ -45,10 +45,21 @@ public class DataFileManager {
 
 	public static void setReviewed(int plotId, boolean bool) {
 		String current = getValue(plotId);
-		if (current.contains("false"))
-			current = current.replaceAll("false", String.valueOf(bool));
+		if (current.contains("unreviewed"))
+			current = current.replaceAll("unreviewed", bool ? "reviewed" : "unreviewed");
 		else
-			current = current.replaceAll("true", String.valueOf(bool));
+			current = current.replaceAll("reviewed", bool ? "reviewed" : "unreviewed");
+		addReview(plotId, current);
+	}
+	
+	public static void setPassed(int plotId, String value) {
+		String current = getValue(plotId);
+		if (current.contains("passed"))
+			current = current.replaceAll("passed", value);
+		else if (current.contains("failed"))
+			current = current.replaceAll("failed", value);
+		else if (current.contains("n/a"))
+			current = current.replaceAll("n/a", value);
 		addReview(plotId, current);
 	}
 	
@@ -88,7 +99,11 @@ public class DataFileManager {
 	}
 
 	public static String getIsReviewed(final int ticketId) {
-		return getReviewInfo(ticketId, 2);
+		return String.valueOf(getReviewInfo(ticketId, 2).equalsIgnoreCase("reviewed"));
+	}
+	
+	public static String getPassed(final int ticketId) {
+		return String.valueOf(getReviewInfo(ticketId, 3).equalsIgnoreCase("passed"));
 	}
 	
 	
@@ -102,6 +117,10 @@ public class DataFileManager {
 			if (section.getString(s).contains(formattedPlot))
 				return s;
 		return null;
+	}
+	
+	public static ConfigurationSection getSection(String section) {
+		return DataFile.getCustomYml().getYml().getConfigurationSection(section);
 	}
 
 	/**************

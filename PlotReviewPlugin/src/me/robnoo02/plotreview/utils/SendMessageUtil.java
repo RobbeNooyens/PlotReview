@@ -12,7 +12,8 @@ public enum SendMessageUtil {
 
 	CREDITS, HELP, SUBMIT, NOT_PLOTOWNER, NOT_ON_PLOT, ALREADY_SUBMITTED, PLOT_SUBMITTED, NO_PERMS, CANCELLED, 
 	CONFIRM_OR_CANCEL, REVIEW_INFO, NO_PAST_REVIEWS, ONLINE_REVIEWED, OFFLINE_REVIEWED, CONFIG_RELOADED, 
-	PLOT_REVIEWED, STAFF_REVIEWED_PLOT, REVIEW_SUMMARY, NO_PENDING_REVIEW, INVALID_ARGUMENT, CLICK_TO_REVIEW;
+	STAFF_REVIEWED_PLOT, REVIEW_SUMMARY, NO_PENDING_REVIEW, INVALID_ARGUMENT, CLICK_TO_REVIEW, 
+	ALREADY_HAS_SUBMISSION, WRITE_COMMENT, CANT_REVIEW_OWN_PLOT;
 
 	private ArrayList<String> list = new ArrayList<>();
 
@@ -37,10 +38,11 @@ public enum SendMessageUtil {
 	public boolean send(CommandSender p) {
 		for (String s : list) {
 			if (s.equalsIgnoreCase("none")) continue;
+			String send = Placeholder.replaceCustom(s);
 			if (!s.toLowerCase().startsWith("@json"))
-				p.sendMessage(ColorableText.toColor(s));
+				p.sendMessage(ColorableText.toColor(send));
 			else
-				sendJson(p, s.replaceFirst("@json", ""));
+				sendJson(p, send.replaceFirst("@json", ""));
 		}
 		return true;
 	}
@@ -66,6 +68,7 @@ public enum SendMessageUtil {
 	public boolean send(CommandSender p, QueryElement data, String value) {
 		for (String s : list) {
 			String send = ColorableText.toColor(s.replaceAll(data.getPlaceHolder(), value));
+			Placeholder.replaceCustom(send);
 			if (send.equalsIgnoreCase("none")) continue;
 			if (!send.toLowerCase().startsWith("@json"))
 				p.sendMessage(send);
